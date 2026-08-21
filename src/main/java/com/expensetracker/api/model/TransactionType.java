@@ -7,9 +7,12 @@ public enum TransactionType {
 /*
 
 Today:
-=> Expense Tracker's Model and DataBase Connection
+=> Expense Tracker's Model Section
 Tomorrow:
-=> Work On Services
+=> API endpoints
 Impediments:
 => NONE
+GitHub:
+=> https://github.com/tej789/expense-tracker.git
+
  */
