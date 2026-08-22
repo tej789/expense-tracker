@@ -13,5 +13,8 @@ public class Budget {
     private int year;
 
     @ManyToOne
-    private Category categoty;
+    private Category category;
+
+    @ManyToOne
+    private User user;
 }
