@@ -3,7 +3,7 @@
 Today:
 => Added User register and login ,also implemented Bcrypt , added user, budget , transaction Repositories
 Tomorrow:
-=> Add Budget
+=> Add Budget , Transaction for individual user and Category
 Impediments:
 => NONE
 GitHub:
