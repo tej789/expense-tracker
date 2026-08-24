@@ -1,0 +1,12 @@
+/*
+
+Today:
+=> Added User register and login ,also implemented Bcrypt , added user, budget , transaction Repositories
+Tomorrow:
+=> Add Budget
+Impediments:
+=> NONE
+GitHub:
+=> https://github.com/tej789/expense-tracker.git
+
+ */
