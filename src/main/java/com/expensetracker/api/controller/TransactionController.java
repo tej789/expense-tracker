@@ -7,6 +7,7 @@ import com.expensetracker.api.service.TransactionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,9 @@ public TransactionController(TransactionService transactionService){
     this.transactionService = transactionService;
 }
 
+
 @PostMapping("/addTransaction")
+@PreAuthorize("hasRole('USER')")
 public ResponseEntity<String> add(@RequestBody TransactionRequest request){
     String msg = transactionService.addTransaction(request);
     return new ResponseEntity<>(msg, HttpStatus.CREATED);

@@ -5,8 +5,10 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import com.expensetracker.api.model.Role;
 @Service
 public class UserService {
 
@@ -21,7 +23,7 @@ public UserService(UserRepository userRepository, PasswordEncoder passwordEncode
 public String registerUser(RegisterRequest request){
 
     if(userRepository.existsByUsername(request.getUsername())){
-        throw new RuntimeException("User Already Exist");
+        throw new IllegalArgumentException("User Already Exist");
     }
 
     User user =new User();
@@ -30,22 +32,20 @@ public String registerUser(RegisterRequest request){
     user.setPassword(
             passwordEncoder.encode(request.getPassword())
     );
+    user.setRole(Role.USER);
 
     userRepository.save(user);
     return "User Added";
 }
 
-  public boolean login(RegisterRequest request){
+  public User login(RegisterRequest request){
 
-      Optional<User> user = userRepository.findByUsername(request.getUsername())
-              ;
+      User user = userRepository.findByUsername(request.getUsername())
+              .orElseThrow(()-> new NoSuchElementException("User not found"));
 
-      if(user.isPresent()){
-
-          if(passwordEncoder.matches(request.getPassword(),user.get().getPassword())){
-              return true;
-          }
+      if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
+          throw new IllegalArgumentException("Invalid password");
       }
-return false;
+      return user;
   }
 }

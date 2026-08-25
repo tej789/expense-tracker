@@ -1,13 +1,8 @@
 package com.expensetracker.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
-import org.springframework.stereotype.Repository;
 
 @Entity
 @Getter
@@ -18,10 +13,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
+    @Column(nullable = false, length = 60)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
 }
 
-
-// check all entity and correct budget entity
