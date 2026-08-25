@@ -5,8 +5,12 @@ import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
+import org.springframework.security.web.context.request.async.SecurityContextCallableProcessingInterceptor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -38,4 +42,18 @@ public class TransactionService {
 
         return "Transaction recorded successfully!";
     }
+
+ public List<Transaction>  getTransaction(){
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user =userRepository.findByUsername(username)
+                .orElseThrow(()-> new NoSuchElementException("No user Found"));
+
+        int Id = user.getId();
+
+        return transactionRepository.findByUserId(Id);
+ }
+
+ public Transaction
 }

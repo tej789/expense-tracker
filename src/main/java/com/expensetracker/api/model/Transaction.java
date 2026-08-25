@@ -1,5 +1,6 @@
 package com.expensetracker.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Transaction {
     private CategoryType category;
 
     @ManyToOne(fetch =FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 

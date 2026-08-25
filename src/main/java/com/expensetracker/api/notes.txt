@@ -1,14 +1,12 @@
 /*
 
 Today:
-=> Added User register and login ,also implemented Bcrypt , added user, budget , transaction Repositories
+=> Added JWT and individual Transaction
 Tomorrow:
-=> Add Budget , Transaction for individual user and Category
+=> Add Budget , Monthly total Expense
 Impediments:
 => NONE
 GitHub:
 => https://github.com/tej789/expense-tracker.git
 
  */
-
-// i have one question

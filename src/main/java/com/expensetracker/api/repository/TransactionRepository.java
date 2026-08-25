@@ -15,6 +15,9 @@ public interface TransactionRepository extends JpaRepository<Transaction,Integer
 
 
     List<Transaction> findByUserId(int userId);
+
+    List<Transaction> findByIdAndUserId(Long id, int userId);
+
 //
 //    @Query("SELECT COALESCE(SUM(t.amount), 0.0) FROM Transaction t " +
 //            "WHERE t.user.id = :userId " +
