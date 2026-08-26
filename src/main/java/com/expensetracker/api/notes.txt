@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Added JWT and individual Transaction
+=> Added Transection CRUD operation
 Tomorrow:
-=> Add Budget , Monthly total Expense
+=> Add Budget CRUD , Monthly budget
 Impediments:
 => NONE
 GitHub:

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -55,5 +56,50 @@ public class TransactionService {
         return transactionRepository.findByUserId(Id);
  }
 
- public Transaction
+
+
+ public TransactionRequest updateTransaction(int transactionId , TransactionRequest request){
+     String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+     User user = userRepository.findByUsername(username)
+             .orElseThrow(() -> new NoSuchElementException("No user Found with this Transaction"));
+
+     int userId = user.getId();
+
+     Optional<Transaction> transactions = transactionRepository.findByIdAndUserId(transactionId, userId);
+
+     if (transactions.isEmpty()) {
+         throw new NoSuchElementException("Transaction not found or you are not authorized to update it.");
+     }
+     Transaction n = transactions.get();
+     n.setAmount(request.getAmount());
+     n.setDescription(request.getDescription());
+     n.setTransactionDate(request.getTransactionDate());
+     n.setType(request.getType());
+     n.setCategory(request.getCategory());
+
+     Transaction x = transactionRepository.save(n);
+
+     return new TransactionRequest(x);
+
+ }
+
+
+ public void deleteTransaction(int transactionId){
+     String username = SecurityContextHolder.getContext().getAuthentication().getName();
+     User user = userRepository.findByUsername(username)
+             .orElseThrow(() -> new NoSuchElementException("No user Found with username: " + username));
+
+     int userId = user.getId();
+     Optional<Transaction> transactions = transactionRepository.findByIdAndUserId(transactionId, userId);
+
+     if (transactions.isEmpty()) {
+         throw new NoSuchElementException("Transaction not found or you are not authorized to delete it.");
+     }
+
+     Transaction t = transactions.get();
+
+     transactionRepository.delete(t);
+ }
+
 }

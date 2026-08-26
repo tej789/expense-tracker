@@ -10,4 +10,6 @@ public class BudgetRequest {
     private double amount;
     private int month;
     private int year;
+
+    public BudgetRequest(){}
 }

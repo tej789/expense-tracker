@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
@@ -16,7 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction,Integer
 
     List<Transaction> findByUserId(int userId);
 
-    List<Transaction> findByIdAndUserId(Long id, int userId);
+    Optional<Transaction> findByIdAndUserId(int id, int userId);
 
 //
 //    @Query("SELECT COALESCE(SUM(t.amount), 0.0) FROM Transaction t " +
