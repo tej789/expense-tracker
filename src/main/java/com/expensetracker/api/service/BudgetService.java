@@ -9,6 +9,8 @@ import com.expensetracker.api.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -107,7 +109,7 @@ public class BudgetService
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
 
-        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        Budget budget = (Budget) budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
                 user.getId(), request.getCategory(), request.getMonth(), request.getYear()
         ).orElseThrow(() -> new NoSuchElementException("Budget not found for this category, month, and year."));
 
@@ -119,15 +121,20 @@ public class BudgetService
     }
 
 
-    public void deleteBudget(int month, int year,CategoryType category){
-
+    public void deleteBudget(int month, int year, CategoryType category) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
+        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+                user.getId(), category, month, year
+        ).orElseThrow(() -> new NoSuchElementException("No budget found for this category in the specified month and year."));
 
-
+        budgetRepository.delete(budget);
     }
+
+
+
 
 }

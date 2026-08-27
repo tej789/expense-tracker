@@ -3,13 +3,17 @@ package com.expensetracker.api.DTO;
 import com.expensetracker.api.model.CategoryType;
 import lombok.Data;
 
+import java.time.Month;
+import java.time.Year;
+
 @Data
 public class BudgetRequest {
     private int userId;
     private CategoryType category;
     private double amount;
-    private int month;
-    private int year;
+    private Month month;
+    private Year year;
 
     public BudgetRequest(){}
+
 }

@@ -5,6 +5,8 @@ import com.expensetracker.api.model.CategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Month;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,7 @@ public interface BudgetRepository extends JpaRepository<Budget,Integer> {
 
 
     List<Budget> findByUserIdAndMonthAndYear(int userId, int month, int year);
+
+
+    Optional<Object> findByUserIdAndCategoryAndMonthAndYear(int id, CategoryType category, Month month, Year year);
 }

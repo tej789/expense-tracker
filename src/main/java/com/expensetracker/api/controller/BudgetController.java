@@ -3,7 +3,6 @@ package com.expensetracker.api.controller;
 
 import com.expensetracker.api.DTO.BudgetRequest;
 import com.expensetracker.api.Exception.Response;
-import com.expensetracker.api.model.Category;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.service.BudgetService;
 import org.springframework.http.HttpStatus;
@@ -23,14 +22,14 @@ public class BudgetController {
     }
 
 
-    @PostMapping("/Budget")
+    @PostMapping("/budget")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<BudgetRequest> setBudget(@RequestBody BudgetRequest request){
         BudgetRequest b = budgetService.setBudget(request);
         return new ResponseEntity<>(b, HttpStatus.OK);
     }
 
-    @GetMapping("/Budget")
+    @GetMapping("/budget")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<BudgetRequest> getBudget(
             @RequestParam int month,
@@ -44,7 +43,7 @@ public class BudgetController {
 
     }
 
-    @GetMapping("/getAllBudgets")
+    @GetMapping("/allbudgets")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<BudgetRequest>> getAllBudgets(
             @RequestParam int month,
@@ -54,7 +53,7 @@ public class BudgetController {
         return new ResponseEntity<>(budgetList, HttpStatus.OK);
     }
 
-    @PutMapping("/Budget")
+    @PutMapping("/budget")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<BudgetRequest> updateBudget(@RequestBody BudgetRequest request){
 
@@ -62,5 +61,16 @@ public class BudgetController {
         return new ResponseEntity<>(b,HttpStatus.OK);
     }
 
+    @DeleteMapping("/budget")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> deleteBudget(
+            @RequestParam int month,@RequestParam int year ,@RequestParam CategoryType category
+    ){
+
+        budgetService.deleteBudget(month,year,category);
+
+        return new ResponseEntity<>("Budget Deleted Successfully",HttpStatus.OK);
+
+    }
 
 }

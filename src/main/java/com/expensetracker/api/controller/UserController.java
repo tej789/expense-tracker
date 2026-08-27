@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('USER')")
-@PostMapping("/user")
+@PostMapping("/register")
 public ResponseEntity<String> Register(@RequestBody RegisterRequest request){
 
      String msg = userService.registerUser(request);

@@ -1,6 +1,7 @@
 package com.expensetracker.api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
+    private String firstname;
+    private String lastname;
+    @Email
+    private String mail;
+    private String phone;
+
     @Column(nullable = false, length = 60)
     private String password;
 

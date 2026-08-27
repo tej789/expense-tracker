@@ -25,7 +25,7 @@ private final TransactionService transactionService;
     }
 
 
-@PostMapping("/Transaction")
+@PostMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
 public ResponseEntity<String> add(@RequestBody TransactionRequest request){
     String msg = transactionService.addTransaction(request);
@@ -33,7 +33,7 @@ public ResponseEntity<String> add(@RequestBody TransactionRequest request){
 }
 
 
-@GetMapping("/Transaction")
+@GetMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<Transaction>> getTransaction(){
         List<Transaction> list = transactionService.getTransaction();
@@ -41,7 +41,7 @@ public ResponseEntity<String> add(@RequestBody TransactionRequest request){
     }
 
 
-  @PutMapping("/Transaction/{transactionId}")
+  @PutMapping("/transaction/{transactionId}")
   @PreAuthorize("hasRole('USER')")
     public ResponseEntity<TransactionRequest> updateTransaction(
             @PathVariable("transactionId") int transactionId
@@ -55,7 +55,7 @@ public ResponseEntity<String> add(@RequestBody TransactionRequest request){
     }
 
 
-    @DeleteMapping("/Transaction/{transactionId}")
+    @DeleteMapping("/transaction/{transactionId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteTransaction(
             @PathVariable("transactionId") int transactionId){

@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Added Transection CRUD operation
+=> Completed budget and transaction CRUD , some changes after review
 Tomorrow:
-=> Add Budget CRUD , Monthly budget
+=> Budget category Over or not
 Impediments:
 => NONE
 GitHub:

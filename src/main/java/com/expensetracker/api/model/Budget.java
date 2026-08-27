@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Month;
+import java.time.Year;
+
 @Entity
 @Getter
 @Setter
@@ -13,8 +16,8 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private double amount;
-    private int month;
-    private int year;
+    private Month month;
+    private Year year;
 
     @Enumerated(EnumType.STRING)
     private CategoryType category;
@@ -22,6 +25,8 @@ public class Budget {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+
 
 }
 
