@@ -22,7 +22,21 @@ User Login
 Hashed Password Using BCrypt
 JWT Authentication
 
-API Endpoints 
+Budget
+Add Monthly Budget For Each Category
+View Budgets For Each Category
+View Budgets For All Category
+Update Budgets For Each Category
+Delete Budgets For Each Category
+
+Transaction
+Add Transactions for Each Category
+View transactions
+Update transactions
+Delete transactions
+
+
+API Endpoints
 
 Register:
 Method : POST
@@ -32,15 +46,39 @@ Login:
 Method : POST
 URL : http://localhost:8081/login
 
+Budget Set:
+Method : POST
+URL : http://localhost:8081/budget
 
-Categories
-Add Monthly Budget For Each Category
-View categories
-Update categories
-Delete categories
+Budget Get:
+Method : GET
+URL : http://localhost:8081/budget?month=AUGUST&year=2026&category=Food
 
-Transactions
-Add Transactions for Each Category
-View transactions
-Update transactions
-Delete transactions
+Budget Get All:
+Method : GET
+URL : http://localhost:8081/allbudgets?month=AUGUST&year=2026
+
+Budget Update:
+Method : PUT
+URL : http://localhost:8081/budget
+
+Budget Delete:
+Method : DELETE
+URL : http://localhost:8081/budget?month=AUGUST&year=2026&category=Food
+
+
+Transaction Add:
+Method : POST
+URL : http://localhost:8081/transaction
+
+Transaction Get:
+Method : GET
+URL : http://localhost:8081/transaction
+
+Transaction Update:
+Method : PUT
+URL : http://localhost:8081/transaction/1
+
+Transaction Delete:
+Method : DELETE
+URL : http://localhost:8081/transaction/1

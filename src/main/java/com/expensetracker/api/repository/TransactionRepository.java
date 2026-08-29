@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,20 +23,10 @@ public interface TransactionRepository extends JpaRepository<Transaction,Integer
 
 
 
-    @Query("SELECT COALESCE(SUM(t.amount), 0.0) FROM Transaction t " +
-            "WHERE t.user.id = :userId " +
-            "AND t.category = :category " +
-            "AND t.type = :type " +
-            "AND FUNCTION('MONTH', t.transactionDate) = :month " +
-            "AND FUNCTION('YEAR', t.transactionDate) = :year")
-    double getTotalAmountByUserCategoryAndMonth(
-            @Param("userId") int userId,
-            @Param("category") CategoryType category,
-            @Param("type") TransactionType type,
-            @Param("month") int month,
-            @Param("year") int year
+    List<Transaction> findByUserIdAndTransactionDateBetween(
+            int userId,
+            LocalDate startDate,
+            LocalDate endDate
     );
-
-
 
 }
