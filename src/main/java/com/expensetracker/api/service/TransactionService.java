@@ -1,6 +1,7 @@
 package com.expensetracker.api.service;
 
 import com.expensetracker.api.DTO.TransactionRequest;
+import com.expensetracker.api.DTO.TransactionResponse;
 import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.request.async.SecurityContextCallableProcessingInterceptor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -26,10 +28,15 @@ public class TransactionService {
     }
 
 
-    public String addTransaction(TransactionRequest request) {
+    public TransactionResponse addTransaction(TransactionRequest request) {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new NoSuchElementException("User not found"));
 
         Transaction transaction = new Transaction();
         transaction.setAmount(request.getAmount());
@@ -41,24 +48,50 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
 
-        return "Transaction recorded successfully!";
+        TransactionResponse res = new TransactionResponse();
+
+        res.setId(transaction.getId());
+        res.setAmount(transaction.getAmount());
+        res.setDescription(transaction.getDescription());
+        res.setTransactionDate(transaction.getTransactionDate());
+        res.setType(transaction.getType());
+        res.setCategory(transaction.getCategory());
+        return res;
+
     }
 
- public List<Transaction>  getTransaction(){
+ public List<TransactionResponse>  getTransaction(){
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user =userRepository.findByUsername(username)
                 .orElseThrow(()-> new NoSuchElementException("No user Found"));
 
-        int Id = user.getId();
+        int id = user.getId();
+     List<Transaction> transactions =
+             transactionRepository.findByUserId(id);
+     List<TransactionResponse> responses = new ArrayList<>();
 
-        return transactionRepository.findByUserId(Id);
+     for (Transaction transaction : transactions) {
+
+         TransactionResponse response = new TransactionResponse();
+
+         response.setId(transaction.getId());
+         response.setAmount(transaction.getAmount());
+         response.setDescription(transaction.getDescription());
+         response.setTransactionDate(transaction.getTransactionDate());
+         response.setType(transaction.getType());
+         response.setCategory(transaction.getCategory());
+
+         responses.add(response);
+     }
+
+     return responses;
  }
 
 
 
- public TransactionRequest updateTransaction(int transactionId , TransactionRequest request){
+ public TransactionResponse updateTransaction(int transactionId , TransactionRequest request){
      String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
      User user = userRepository.findByUsername(username)
@@ -80,7 +113,15 @@ public class TransactionService {
 
      Transaction x = transactionRepository.save(n);
 
-     return new TransactionRequest(x);
+     TransactionResponse res = new TransactionResponse();
+     res.setId(x.getId());
+     res.setAmount(x.getAmount());
+     res.setDescription(x.getDescription());
+     res.setTransactionDate(x.getTransactionDate());
+     res.setType(x.getType());
+     res.setCategory(x.getCategory());
+
+     return res;
 
  }
 

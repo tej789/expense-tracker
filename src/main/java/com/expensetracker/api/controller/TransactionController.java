@@ -1,6 +1,7 @@
 package com.expensetracker.api.controller;
 
 import com.expensetracker.api.DTO.TransactionRequest;
+import com.expensetracker.api.DTO.TransactionResponse;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.TransactionService;
 import org.springframework.http.HttpStatus;
@@ -27,28 +28,28 @@ private final TransactionService transactionService;
 
 @PostMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
-public ResponseEntity<String> add(@RequestBody TransactionRequest request){
-    String msg = transactionService.addTransaction(request);
+public ResponseEntity<TransactionResponse> add(@RequestBody TransactionRequest request){
+    TransactionResponse msg = transactionService.addTransaction(request);
     return new ResponseEntity<>(msg, HttpStatus.CREATED);
 }
 
 
 @GetMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<Transaction>> getTransaction(){
-        List<Transaction> list = transactionService.getTransaction();
+    public ResponseEntity<List<TransactionResponse>> getTransaction(){
+        List<TransactionResponse> list = transactionService.getTransaction();
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
 
   @PutMapping("/transaction/{transactionId}")
   @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<TransactionRequest> updateTransaction(
+    public ResponseEntity<TransactionResponse> updateTransaction(
             @PathVariable("transactionId") int transactionId
            ,@RequestBody TransactionRequest request
     ){
 
-    TransactionRequest n =  transactionService.updateTransaction(transactionId,request);
+    TransactionResponse n =  transactionService.updateTransaction(transactionId,request);
 
     return new ResponseEntity<>(n,HttpStatus.OK);
 

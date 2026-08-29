@@ -7,12 +7,13 @@ import java.time.Month;
 import java.time.Year;
 
 @Data
-public class BudgetRequest {
+public class BudgetResponse {
+
     private CategoryType category;
     private double amount;
     private Month month;
     private Year year;
 
-    public BudgetRequest(){}
+    public BudgetResponse(){}
 
 }

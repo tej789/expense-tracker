@@ -1,6 +1,9 @@
 package com.expensetracker.api.controller;
 
+import com.expensetracker.api.DTO.LoginRequest;
+import com.expensetracker.api.DTO.LoginResponse;
 import com.expensetracker.api.DTO.RegisterRequest;
+import com.expensetracker.api.DTO.RegisterResponse;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.service.JwtService;
 import com.expensetracker.api.service.UserService;
@@ -28,21 +31,18 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @PreAuthorize("hasRole('USER')")
-@PostMapping("/register")
-public ResponseEntity<String> Register(@RequestBody RegisterRequest request){
-
-     String msg = userService.registerUser(request);
-
-        return new ResponseEntity<>(msg, HttpStatus.CREATED);
-}
+    @PostMapping("/register")
+    public RegisterResponse register(@RequestBody RegisterRequest request) {
+        return userService.registerUser(request);
+    }
 
 @PostMapping("/login")
-  public ResponseEntity<String> Login(@RequestBody RegisterRequest request){
+  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
 
         User user = userService.login(request);
     String token = jwtService.generateToken(user.getUsername(), user.getRole());
-    return new ResponseEntity<>(token, HttpStatus.OK);
+
+    return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
   }
 
 

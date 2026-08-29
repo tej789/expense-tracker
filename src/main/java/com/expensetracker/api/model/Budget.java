@@ -16,6 +16,8 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private double amount;
+
+    @Enumerated(EnumType.STRING)
     private Month month;
     private Year year;
 

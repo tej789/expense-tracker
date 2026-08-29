@@ -13,11 +13,10 @@ import java.util.Optional;
 @Repository
 public interface BudgetRepository extends JpaRepository<Budget,Integer> {
 
-    Optional<Budget> findByUserIdAndCategoryAndMonthAndYear(int userId, CategoryType category, int month, int year);
+    Optional<Budget> findByUserIdAndCategoryAndMonthAndYear(int userId, CategoryType category, Month month, Year year);
 
 
-    List<Budget> findByUserIdAndMonthAndYear(int userId, int month, int year);
+    List<Budget> findByUserIdAndMonthAndYear(int userId, Month month, Year year);
 
 
-    Optional<Object> findByUserIdAndCategoryAndMonthAndYear(int id, CategoryType category, Month month, Year year);
 }

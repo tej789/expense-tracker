@@ -1,6 +1,8 @@
 package com.expensetracker.api.service;
 
+import com.expensetracker.api.DTO.LoginRequest;
 import com.expensetracker.api.DTO.RegisterRequest;
+import com.expensetracker.api.DTO.RegisterResponse;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,8 +22,7 @@ public UserService(UserRepository userRepository, PasswordEncoder passwordEncode
     this.passwordEncoder = passwordEncoder;
 }
 
-public String registerUser(RegisterRequest request){
-
+    public RegisterResponse registerUser(RegisterRequest request){
     if(userRepository.existsByUsername(request.getUsername())){
         throw new IllegalArgumentException("User Already Exist");
     }
@@ -29,16 +30,23 @@ public String registerUser(RegisterRequest request){
     User user =new User();
 
     user.setUsername(request.getUsername());
+    user.setFirstname(request.getFirstname());
+    user.setLastname(request.getLastname());
+    user.setMail(request.getMail());
+    user.setPhone(request.getPhone());
     user.setPassword(
             passwordEncoder.encode(request.getPassword())
     );
     user.setRole(Role.USER);
 
     userRepository.save(user);
-    return "User Added";
+        return new RegisterResponse(
+                "User registered successfully",
+                user.getUsername()
+        );
 }
 
-  public User login(RegisterRequest request){
+  public User login(LoginRequest request){
 
       User user = userRepository.findByUsername(request.getUsername())
               .orElseThrow(()-> new NoSuchElementException("User not found"));

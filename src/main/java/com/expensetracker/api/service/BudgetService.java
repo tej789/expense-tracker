@@ -1,6 +1,7 @@
 package com.expensetracker.api.service;
 
 import com.expensetracker.api.DTO.BudgetRequest;
+import com.expensetracker.api.DTO.BudgetResponse;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.User;
@@ -28,7 +29,7 @@ public class BudgetService
         this.userRepository = userRepository;
 
     }
-    public BudgetRequest setBudget(BudgetRequest request) {
+    public BudgetResponse setBudget(BudgetRequest request) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
@@ -53,12 +54,19 @@ public class BudgetService
 
         budgetRepository.save(newBudget);
 
-        request.setUserId(user.getId());
-        return request;
+        BudgetResponse response = new BudgetResponse();
+
+        response.setCategory(newBudget.getCategory());
+        response.setAmount(newBudget.getAmount());
+        response.setMonth(newBudget.getMonth());
+        response.setYear(newBudget.getYear());
+
+        return response;
+
     }
 
 
-   public BudgetRequest getBudget(int month, int year, CategoryType category){
+   public BudgetResponse getBudget(java.time.Month month, java.time.Year year, CategoryType category){
 
        String username = SecurityContextHolder.getContext().getAuthentication().getName();
        User user = userRepository.findByUsername(username)
@@ -69,8 +77,7 @@ public class BudgetService
                user.getId(), category, month, year
        ).orElseThrow(() -> new NoSuchElementException("No budget set for this category in the specified month and year."));
 
-       BudgetRequest response = new BudgetRequest();
-       response.setUserId(user.getId());
+       BudgetResponse response = new BudgetResponse();
        response.setAmount(budget.getAmount());
        response.setMonth(budget.getMonth());
        response.setYear(budget.getYear());
@@ -80,7 +87,7 @@ public class BudgetService
    }
 
 
-   public List<BudgetRequest> getAllBudgets(int month,int year){
+   public List<BudgetResponse> getAllBudgets(Month month,Year year){
 
        String username = SecurityContextHolder.getContext().getAuthentication().getName();
        User user = userRepository.findByUsername(username)
@@ -88,11 +95,10 @@ public class BudgetService
 
        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYear(user.getId(),month,year);
 
-       List<BudgetRequest> dtoList = new ArrayList<>();
+       List<BudgetResponse> dtoList = new ArrayList<>();
        for (Budget budget : budgets) {
 
-           BudgetRequest dto = new BudgetRequest();
-           dto.setUserId(user.getId());
+           BudgetResponse dto = new BudgetResponse();
            dto.setAmount(budget.getAmount());
            dto.setMonth(budget.getMonth());
            dto.setYear(budget.getYear());
@@ -103,7 +109,7 @@ public class BudgetService
        return dtoList;
     }
 
-    public BudgetRequest updateBudget(BudgetRequest request){
+    public BudgetResponse updateBudget(BudgetRequest request){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
@@ -116,12 +122,19 @@ public class BudgetService
         budget.setAmount(request.getAmount());
 
         budgetRepository.save(budget);
-        request.setUserId(user.getId());
-        return request;
+
+        BudgetResponse response = new BudgetResponse();
+
+        response.setCategory(budget.getCategory());
+        response.setAmount(budget.getAmount());
+        response.setMonth(budget.getMonth());
+        response.setYear(budget.getYear());
+
+        return response;
     }
 
 
-    public void deleteBudget(int month, int year, CategoryType category) {
+    public void deleteBudget(Month month, Year year, CategoryType category) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByUsername(username)
