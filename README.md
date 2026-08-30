@@ -21,6 +21,9 @@ User Registration
 User Login
 Hashed Password Using BCrypt
 JWT Authentication
+Get All Users
+Get User By ID
+Remove User By ID
 
 Budget
 Add Monthly Budget For Each Category
@@ -45,6 +48,18 @@ URL : http://localhost:8081/register
 Login:
 Method : POST
 URL : http://localhost:8081/login
+
+Get All Users:
+Method : GET
+URL : http://localhost:8081/users
+
+Get User By ID:
+Method : GET
+URL : http://localhost:8081/user/1
+
+Delete User By ID:
+Method : DELETE
+URL : http://localhost:8081/user/1
 
 Budget Set:
 Method : POST
@@ -82,3 +97,8 @@ URL : http://localhost:8081/transaction/1
 Transaction Delete:
 Method : DELETE
 URL : http://localhost:8081/transaction/1
+
+Monthly Summary:
+Method : GET
+URL : http://localhost:8081/summary?month=AUGUST&year=2026
+

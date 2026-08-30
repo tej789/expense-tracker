@@ -29,6 +29,10 @@ public class TransactionService {
 
 
     public TransactionResponse addTransaction(TransactionRequest request) {
+        if (request.getAmount() <= 0) {
+            throw new IllegalArgumentException("Transaction amount must be greater than 0");
+        }
+
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -45,6 +49,8 @@ public class TransactionService {
         transaction.setType(request.getType());
         transaction.setCategory(request.getCategory());
         transaction.setUser(user);
+
+
 
         transactionRepository.save(transaction);
 

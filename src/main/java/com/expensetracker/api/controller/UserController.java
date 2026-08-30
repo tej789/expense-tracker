@@ -1,21 +1,13 @@
 package com.expensetracker.api.controller;
 
-import com.expensetracker.api.DTO.LoginRequest;
-import com.expensetracker.api.DTO.LoginResponse;
-import com.expensetracker.api.DTO.RegisterRequest;
-import com.expensetracker.api.DTO.RegisterResponse;
+import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.service.JwtService;
 import com.expensetracker.api.service.UserService;
-import jakarta.transaction.Transaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,6 +36,34 @@ public class UserController {
 
     return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
   }
+
+
+  @GetMapping("/users")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<List<UserResponse>> getAllUsers(){
+        List<UserResponse> users = userService.getAllUsers();
+        return new ResponseEntity<>(users,HttpStatus.OK);
+  }
+
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<UserResponse> getUserById(
+          @PathVariable("id") int id
+  ){
+        UserResponse user = userService.getUserById(id);
+        return new ResponseEntity<>(user,HttpStatus.OK);
+  }
+
+    @DeleteMapping("/user/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public String deleteUserById(
+          @PathVariable("id") int id
+  ){
+        userService.deleteUserById(id);
+        return "User with ID " + id + " has been deleted.";
+  }
+
+
 
 
 }

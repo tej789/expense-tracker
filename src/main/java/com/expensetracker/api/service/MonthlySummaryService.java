@@ -1,4 +1,114 @@
 package com.expensetracker.api.service;
 
+import com.expensetracker.api.DTO.MonthlySummaryResponse;
+import com.expensetracker.api.model.Budget;
+import com.expensetracker.api.model.CategoryType;
+import com.expensetracker.api.model.Transaction;
+import com.expensetracker.api.model.User;
+import com.expensetracker.api.repository.BudgetRepository;
+import com.expensetracker.api.repository.TransactionRepository;
+import com.expensetracker.api.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class MonthlySummaryService {
+
+    private final BudgetRepository budgetRepository;
+    private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
+
+    public MonthlySummaryService(
+            BudgetRepository budgetRepository,
+            TransactionRepository transactionRepository,
+            UserRepository userRepository) {
+
+        this.budgetRepository = budgetRepository;
+        this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
+    }
+
+    public List<MonthlySummaryResponse> getMonthlySummary(
+            Month month,
+            Year year) {
+
+        // Get logged-in username
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        // Find logged-in user
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        int userId = user.getId();
+
+        // Get budgets for selected month and year
+        List<Budget> budgets =
+                budgetRepository.findByUserIdAndMonthAndYear(
+                        userId,
+                        month,
+                        year
+                );
+
+        // Find first day of month
+        LocalDate startDate =
+                LocalDate.of(year.getValue(), month, 1);
+
+        // Find last day of month
+        LocalDate endDate =
+                LocalDate.of(
+                        year.getValue(),
+                        month,
+                        month.length(year.isLeap())
+                );
+
+        // Get all transactions for this month
+        List<Transaction> transactions =
+                transactionRepository
+                        .findByUserIdAndTransactionDateBetween(
+                                userId,
+                                startDate,
+                                endDate
+                        );
+
+        List<MonthlySummaryResponse> summary =
+                new ArrayList<>();
+
+        // Check every budget category
+        for (Budget budget : budgets) {
+
+            double spent = 0;
+
+            // Find transactions for this category
+            for (Transaction transaction : transactions) {
+
+                if (transaction.getCategory()
+                        == budget.getCategory()) {
+
+                    spent = spent + transaction.getAmount();
+                }
+            }
+
+            // Create summary for this category
+            MonthlySummaryResponse response =
+                    new MonthlySummaryResponse(
+                            budget.getCategory(),
+                            budget.getAmount(),
+                            spent
+                    );
+
+            summary.add(response);
+        }
+
+        return summary;
+    }
 }
