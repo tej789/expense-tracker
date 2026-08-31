@@ -32,26 +32,15 @@ public class TransactionServiceTest {
     private TransactionService transactionService;
 
     @Test
-    void TransactionAmountZero(){
-
-        User user = new User();
-        user.setId(1);
-        user.setUsername("tej");
+    void shouldRejectZeroAmount() {
 
         TransactionRequest request = new TransactionRequest();
         request.setAmount(0);
-
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
 
         assertThrows(
                 IllegalArgumentException.class,
                 () -> transactionService.addTransaction(request)
         );
-
-
     }
 
     @Test

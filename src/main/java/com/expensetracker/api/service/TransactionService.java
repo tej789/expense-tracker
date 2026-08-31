@@ -204,7 +204,7 @@ public TotalExpenseResponse getTotalMonthlyExpense(Month month,Year year){
         );
         double totalExpense = 0;
         for(Transaction transaction : transactions){
-            totalExpense =+ transaction.getAmount();
+            totalExpense += transaction.getAmount();
         }
 
 

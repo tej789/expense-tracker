@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -28,7 +29,7 @@ public class AuthServiceTest {
     private AuthService authService;
 
     @Test
-    void ExistUserShouldNotRegister(){
+    void shouldNotRegisterExistingUser() {
         RegisterRequest user = new RegisterRequest();
         user.setUsername("USER3");
         user.setFirstname("x");
@@ -36,7 +37,7 @@ public class AuthServiceTest {
         user.setMail("tejgoti2005@gmail.com");
         user.setPhone("9583385944");
 
-        Mockito.when(userRepository.existsByUsername("USER3")).thenReturn(true);
+        when(userRepository.existsByUsername("USER3")).thenReturn(true);
 
         assertThrows(
                 IllegalArgumentException.class,

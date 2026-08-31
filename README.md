@@ -38,6 +38,16 @@ Update transactions
 Delete transactions
 
 
+
+Categories
+
+Food
+Travel
+Housing
+Entertainment 
+Other
+
+
 API Endpoints
 
 Register:

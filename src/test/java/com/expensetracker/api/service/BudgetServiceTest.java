@@ -37,24 +37,15 @@ class BudgetServiceTest {
 
 
     @Test
-    void negativeBudget(){
+    void shouldRejectNegativeBudget() {
 
-        User user = new User();
-        user.setId(1);
-        user.setUsername("tej");
-
-        BudgetRequest budgetRequest = new BudgetRequest();
-        budgetRequest.setAmount(-5000);
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
+        BudgetRequest request = new BudgetRequest();
+        request.setAmount(-5000);
 
         assertThrows(
                 IllegalArgumentException.class,
-        ()-> budgetService.setBudget(budgetRequest)
+                () -> budgetService.setBudget(request)
         );
-
     }
 
 
