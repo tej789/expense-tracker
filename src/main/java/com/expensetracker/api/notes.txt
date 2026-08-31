@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Completed budget and transaction CRUD , some changes after review
+=> Added Total Monthly budget and expense , monthly summary
 Tomorrow:
-=> Budget category Over or not
+=> Business Logic
 Impediments:
 => NONE
 GitHub:
