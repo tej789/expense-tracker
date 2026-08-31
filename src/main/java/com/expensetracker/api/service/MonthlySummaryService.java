@@ -38,32 +38,22 @@ public class MonthlySummaryService {
             Month month,
             Year year) {
 
-        // Get logged-in username
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // Find logged-in user
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         int userId = user.getId();
 
-        // Get budgets for selected month and year
-        List<Budget> budgets =
-                budgetRepository.findByUserIdAndMonthAndYear(
+        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYear(
                         userId,
                         month,
                         year
                 );
 
-        // Find first day of month
         LocalDate startDate =
                 LocalDate.of(year.getValue(), month, 1);
 
-        // Find last day of month
         LocalDate endDate =
                 LocalDate.of(
                         year.getValue(),
@@ -71,7 +61,6 @@ public class MonthlySummaryService {
                         month.length(year.isLeap())
                 );
 
-        // Get all transactions for this month
         List<Transaction> transactions =
                 transactionRepository
                         .findByUserIdAndTransactionDateBetween(
@@ -80,15 +69,13 @@ public class MonthlySummaryService {
                                 endDate
                         );
 
-        List<MonthlySummaryResponse> summary =
-                new ArrayList<>();
+        List<MonthlySummaryResponse> summary = new ArrayList<>();
 
-        // Check every budget category
         for (Budget budget : budgets) {
 
             double spent = 0;
 
-            // Find transactions for this category
+
             for (Transaction transaction : transactions) {
 
                 if (transaction.getCategory()
@@ -98,9 +85,8 @@ public class MonthlySummaryService {
                 }
             }
 
-            // Create summary for this category
-            MonthlySummaryResponse response =
-                    new MonthlySummaryResponse(
+
+            MonthlySummaryResponse response = new MonthlySummaryResponse(
                             budget.getCategory(),
                             budget.getAmount(),
                             spent
