@@ -1,5 +1,6 @@
 package com.expensetracker.api.service;
 
+import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
 import com.expensetracker.api.model.Transaction;
@@ -11,6 +12,10 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.request.async.SecurityContextCallableProcessingInterceptor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -74,8 +79,7 @@ public class TransactionService {
                 .orElseThrow(()-> new NoSuchElementException("No user Found"));
 
         int id = user.getId();
-     List<Transaction> transactions =
-             transactionRepository.findByUserId(id);
+     List<Transaction> transactions = transactionRepository.findByUserId(id);
      List<TransactionResponse> responses = new ArrayList<>();
 
      for (Transaction transaction : transactions) {
@@ -95,6 +99,37 @@ public class TransactionService {
      return responses;
  }
 
+    public List<TransactionResponse> getTransactionByMonth(Year year, Month month) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("No user Found"));
+
+        int id = user.getId();
+
+        YearMonth yearMonth = YearMonth.of(year.getValue(), month);
+        LocalDate startDate = yearMonth.atDay(1);
+        LocalDate endDate = yearMonth.atEndOfMonth();
+
+        List<Transaction> transactions =
+                transactionRepository.findByUserIdAndTransactionDateBetween(id, startDate, endDate);
+
+        List<TransactionResponse> res = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            TransactionResponse response = new TransactionResponse();
+            response.setId(transaction.getId());
+            response.setAmount(transaction.getAmount());
+            response.setDescription(transaction.getDescription());
+            response.setTransactionDate(transaction.getTransactionDate());
+            response.setType(transaction.getType());
+            response.setCategory(transaction.getCategory());
+
+            res.add(response);
+        }
+
+        return res;
+    }
 
 
  public TransactionResponse updateTransaction(int transactionId , TransactionRequest request){
@@ -149,6 +184,36 @@ public class TransactionService {
      transactionRepository.delete(t);
  }
 
+public TotalExpenseResponse getTotalMonthlyExpense(Month month,Year year){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("No user Found with username: " + username));
+
+        int userId = user.getId();
+        LocalDate startDate =
+                LocalDate.of(year.getValue(), month,1);
+
+        LocalDate endDate =
+                LocalDate.of(year.getValue(), month, month.length(year.isLeap()));
+
+        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+                userId,
+                startDate,
+                endDate
+        );
+        double totalExpense = 0;
+        for(Transaction transaction : transactions){
+            totalExpense =+ transaction.getAmount();
+        }
+
+
+        TotalExpenseResponse response = new TotalExpenseResponse();
+        response.setMonth(month);
+        response.setYear(year);
+        response.setTotalExpense(totalExpense);
+        return response;
+}
 
 
 }

@@ -2,6 +2,7 @@ package com.expensetracker.api.service;
 
 import com.expensetracker.api.DTO.BudgetRequest;
 import com.expensetracker.api.DTO.BudgetResponse;
+import com.expensetracker.api.DTO.TotalBudgetResponse;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.User;
@@ -15,7 +16,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class BudgetService
@@ -30,6 +30,10 @@ public class BudgetService
 
     }
     public BudgetResponse setBudget(BudgetRequest request) {
+
+        if(request.getAmount()<1){
+            throw new  IllegalArgumentException("Amount should not be zero or negative");
+        }
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
@@ -51,6 +55,8 @@ public class BudgetService
         newBudget.setYear(request.getYear());
         newBudget.setCategory(request.getCategory());
         newBudget.setAmount(request.getAmount());
+
+
 
         budgetRepository.save(newBudget);
 
@@ -148,6 +154,35 @@ public class BudgetService
     }
 
 
+
+    public TotalBudgetResponse getTotalMonthlyBudget(Month month, Year year){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        int userId =user.getId();
+        double totalBudget = 0;
+
+        List<Budget> budgets = new ArrayList<>();
+
+        budgets = budgetRepository.findByUserIdAndMonthAndYear(
+                userId,
+                month,year
+        );
+
+        for(Budget budget : budgets){
+
+             totalBudget =+ budget.getAmount();
+        }
+     TotalBudgetResponse response = new TotalBudgetResponse();
+        response.setMonth(month);
+        response.setYear(year);
+        response.setTotalBudget(totalBudget);
+
+
+        return response;
+    }
 
 
 }

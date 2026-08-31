@@ -43,7 +43,6 @@ API Endpoints
 Register:
 Method : POST
 URL : http://localhost:8081/register
-
 Authentication Not Required
 
 Body example:
@@ -59,7 +58,6 @@ Body example:
 Login:
 Method : POST
 URL : http://localhost:8081/login
-
 Authentication Not Required
 
 Body example:
@@ -72,13 +70,11 @@ Body example:
 Get All Users:
 Method : GET
 URL : http://localhost:8081/users
-
 Only Admin Have Authority
 
 Get User By ID:
 Method : GET
 URL : http://localhost:8081/user/1
-
 Only Admin Have Authority
 
 Delete User By ID:
@@ -91,7 +87,6 @@ Only Admin Have Authority
 Budget Set:
 Method : POST
 URL : http://localhost:8081/budget
-
 Authentication Required
 
 Body example:
@@ -106,20 +101,17 @@ Body example:
 Budget Get:
 Method : GET
 URL : http://localhost:8081/budget?month=AUGUST&year=2026&category=Food
-
 Authentication Required
 
 
 Budget Get All:
 Method : GET
 URL : http://localhost:8081/allbudgets?month=AUGUST&year=2026
-
 Authentication Required
 
 Budget Update:
 Method : PUT
 URL : http://localhost:8081/budget
-
 Authentication Required
 
 Body example:
@@ -133,14 +125,17 @@ Body example:
 Budget Delete:
 Method : DELETE
 URL : http://localhost:8081/budget?month=AUGUST&year=2026&category=Food
-
 Authentication Required
 
+Get Total Monthly Budget:
+Method : GET
+URL :
+http://localhost:8081/budget/total?month=AUGUST&year=2026
+Authentication Required
 
 Transaction Add:
 Method : POST
 URL : http://localhost:8081/transaction
-
 Authentication Required
 
 Body example:
@@ -156,13 +151,11 @@ Body example:
 Transaction Get:
 Method : GET
 URL : http://localhost:8081/transaction
-
 Authentication Required
 
 Transaction Update:
 Method : PUT
 URL : http://localhost:8081/transaction/1
-
 Authentication Required
 
 Body example:
@@ -177,12 +170,21 @@ Body example:
 Transaction Delete:
 Method : DELETE
 URL : http://localhost:8081/transaction/1
+Authentication Required
 
+get total monthly Expense:
+Method : GET
+URL : http://localhost:8081/transaction/total?month=AUGUST&year=2026
 Authentication Required
 
 
 Monthly Summary:
 Method : GET
 URL : http://localhost:8081/summary?month=AUGUST&year=2026
+Authentication Required
 
+
+Monthly Summary By category:
+Method : GET
+URL : http://localhost:8081/summary?month=AUGUST&year=2026&category=Food
 Authentication Required

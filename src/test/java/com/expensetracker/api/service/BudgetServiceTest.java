@@ -35,6 +35,30 @@ class BudgetServiceTest {
     @InjectMocks
     BudgetService budgetService;
 
+
+    @Test
+    void negativeBudget(){
+
+        User user = new User();
+        user.setId(1);
+        user.setUsername("tej");
+
+        BudgetRequest budgetRequest = new BudgetRequest();
+        budgetRequest.setAmount(-5000);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("tej", null)
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+        ()-> budgetService.setBudget(budgetRequest)
+        );
+
+    }
+
+
+
     @Test
     void shouldNotAllowDuplicateBudget() {
 

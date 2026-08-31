@@ -34,6 +34,65 @@ public class MonthlySummaryService {
         this.userRepository = userRepository;
     }
 
+
+    public MonthlySummaryResponse getSummaryOfCategory(
+            Month month,
+            Year year,
+            CategoryType category
+    ){
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        int userId = user.getId();
+
+        Budget budget = budgetRepository.findByUserIdAndMonthAndYearAndCategory(
+                userId,
+                month,
+                year,
+                category
+        );
+
+        LocalDate startDate =
+                LocalDate.of(year.getValue(), month, 1);
+
+        LocalDate endDate =
+                LocalDate.of(
+                        year.getValue(),
+                        month,
+                        month.length(year.isLeap())
+                );
+
+
+        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+                userId,
+                startDate,
+                endDate
+        );
+
+        double spent= 0;
+
+        for(Transaction transaction : transactions)
+        {
+       if(transaction.getCategory() == budget.getCategory() ){
+           spent = spent + transaction.getAmount();
+       }
+        }
+
+     MonthlySummaryResponse res =  new MonthlySummaryResponse(
+                 budget.getCategory(),
+        budget.getAmount(),
+        spent
+    );
+
+        return res;
+    }
+
+
+
+
     public List<MonthlySummaryResponse> getMonthlySummary(
             Month month,
             Year year) {
@@ -61,8 +120,7 @@ public class MonthlySummaryService {
                         month.length(year.isLeap())
                 );
 
-        List<Transaction> transactions =
-                transactionRepository
+        List<Transaction> transactions = transactionRepository
                         .findByUserIdAndTransactionDateBetween(
                                 userId,
                                 startDate,

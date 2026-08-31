@@ -23,20 +23,6 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/register")
-    public RegisterResponse register(@RequestBody RegisterRequest request) {
-        return userService.registerUser(request);
-    }
-
-@PostMapping("/login")
-  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
-
-        User user = userService.login(request);
-    String token = jwtService.generateToken(user.getUsername(), user.getRole());
-
-    return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
-  }
-
 
   @GetMapping("/users")
   @PreAuthorize("hasRole('ADMIN')")

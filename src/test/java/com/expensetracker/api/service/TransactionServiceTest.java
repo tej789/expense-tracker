@@ -94,5 +94,6 @@ public class TransactionServiceTest {
                 NoSuchElementException.class,
                 () -> transactionService.addTransaction(request)
         );
+
     }
 }

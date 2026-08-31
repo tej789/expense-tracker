@@ -19,7 +19,7 @@ public String generateToken(String username , Role role){
     SecretKey key = Keys.hmacShaKeyFor(Secret.getBytes());
     return Jwts.builder()
             .subject(username)
-            .claim("role",role)    // for role based access
+            .claim("role",role)
             .issuedAt(new java.util.Date())
             .expiration(new java.util.Date(System.currentTimeMillis() + 1000 * 60 * 120))
             .signWith(key)

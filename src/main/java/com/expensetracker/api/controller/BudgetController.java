@@ -3,7 +3,7 @@ package com.expensetracker.api.controller;
 
 import com.expensetracker.api.DTO.BudgetRequest;
 import com.expensetracker.api.DTO.BudgetResponse;
-import com.expensetracker.api.Exception.Response;
+import com.expensetracker.api.DTO.TotalBudgetResponse;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.service.BudgetService;
 import org.springframework.http.HttpStatus;
@@ -46,6 +46,14 @@ public class BudgetController {
 
     }
 
+    @GetMapping("/budget/total")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<TotalBudgetResponse> getTotalMonthlyBudget(
+            @RequestParam Month month,@RequestParam Year year){
+        TotalBudgetResponse response = budgetService.getTotalMonthlyBudget(month,year);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
     @GetMapping("/allbudgets")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<BudgetResponse>> getAllBudgets(
@@ -75,5 +83,8 @@ public class BudgetController {
         return new ResponseEntity<>("Budget Deleted Successfully",HttpStatus.OK);
 
     }
+
+
+
 
 }
