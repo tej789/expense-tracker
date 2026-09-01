@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -113,5 +114,20 @@ public class TransactionServiceTest {
         );
     }
 
+    @Test
+    void shouldNotAllowFutureTransactionDate() {
 
+        TransactionRequest request = new TransactionRequest();
+
+        request.setAmount(100);
+        request.setTransactionDate(LocalDate.now().plusDays(1));
+
+    }
+
+
+    void CannotUpdateTransactionWithoutAuthorizeUser(){
+
+
+
+    }
 }

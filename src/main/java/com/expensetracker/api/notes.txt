@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Added Total Monthly budget and expense , monthly summary
+=> Added Monthly Individual Category summary, Write some JUnit test
 Tomorrow:
-=> Business Logic
+=> JUnit test
 Impediments:
 => NONE
 GitHub:

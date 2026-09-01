@@ -34,10 +34,10 @@ public class TransactionService {
 
 
     public TransactionResponse addTransaction(TransactionRequest request) {
+
         if (request.getAmount() <= 0) {
             throw new IllegalArgumentException("Transaction amount must be greater than 0");
         }
-
         String username = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -56,6 +56,9 @@ public class TransactionService {
         transaction.setUser(user);
 
 
+        if (request.getTransactionDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Transaction date cannot be in the future");
+        }
 
         transactionRepository.save(transaction);
 
@@ -145,6 +148,14 @@ public class TransactionService {
      if (transactions.isEmpty()) {
          throw new NoSuchElementException("Transaction not found or you are not authorized to update it.");
      }
+
+     if (request.getAmount() <= 0) {
+         throw new IllegalArgumentException("Transaction amount must be greater than 0");
+     }
+     if (request.getTransactionDate().isAfter(LocalDate.now())) {
+         throw new IllegalArgumentException("Transaction date cannot be in the future");
+     }
+
      Transaction n = transactions.get();
      n.setAmount(request.getAmount());
      n.setDescription(request.getDescription());
