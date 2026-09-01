@@ -33,7 +33,7 @@ public String extractUsername(String token){
             .build()
             .parseSignedClaims(token)
             .getPayload()
-            .getSubject()   ;
+            .getSubject();
 }
 
 

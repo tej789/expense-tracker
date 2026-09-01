@@ -2,6 +2,7 @@ package com.expensetracker.api.service;
 
 
 import com.expensetracker.api.DTO.TransactionRequest;
+import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
@@ -85,4 +86,32 @@ public class TransactionServiceTest {
         );
 
     }
+
+
+    @Test
+    void shouldNotDeleteTransactionThatNotExist(){
+
+        User user =new User();
+        user.setId(1);
+        user.setUsername("tej");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("tej",null)
+        );
+
+        when(userRepository.findByUsername("tej"))
+                .thenReturn(Optional.of(user));
+        Transaction transaction = new Transaction();
+        transaction.setId(1);
+
+        when(transactionRepository.findByIdAndUserId(transaction.getId(),user.getId()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> transactionService.deleteTransaction(transaction.getId())
+        );
+    }
+
+
 }

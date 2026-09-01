@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Month;
 import java.time.Year;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,5 +85,66 @@ class BudgetServiceTest {
     }
 
 
+    @Test
+    void shouldNotAllowUpdateBudgetThatNotExist(){
+        User user = new User();
+        user.setId(1);
+        user.setUsername("tej");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("tej", null)
+        );
+        when(userRepository.findByUsername("tej"))
+                .thenReturn(Optional.of(user));
+
+        BudgetRequest request = new BudgetRequest();
+
+        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+                1,
+                request.getCategory(),
+                request.getMonth(),
+                request.getYear()
+        )).thenReturn(Optional.empty());
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> budgetService.updateBudget(request)
+        );
+    }
+
+    @Test
+    void shouldNotDeleteBudgetThatIsNotExist(){
+        User user = new User();
+        user.setId(1);
+        user.setUsername("tej");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("tej", null)
+        );
+        when(userRepository.findByUsername("tej"))
+                .thenReturn(Optional.of(user));
+
+        BudgetRequest request = new BudgetRequest();
+        request.setMonth(Month.AUGUST);
+        request.setYear(Year.of(2026));
+        request.setCategory(CategoryType.Food);
+
+
+        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+                1,
+                request.getCategory(),
+                request.getMonth(),
+                request.getYear()
+        )).thenReturn(Optional.empty());
+
+        assertThrows(
+                NoSuchElementException.class,
+                () ->budgetService.deleteBudget(request.getMonth(),request.getYear(),request.getCategory())
+        );
+
+    }
+
 
 }
+
+//

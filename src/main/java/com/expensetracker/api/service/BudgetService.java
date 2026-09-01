@@ -116,7 +116,9 @@ public class BudgetService
     }
 
     public BudgetResponse updateBudget(BudgetRequest request){
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
@@ -173,7 +175,7 @@ public class BudgetService
 
         for(Budget budget : budgets){
 
-             totalBudget =+ budget.getAmount();
+             totalBudget += budget.getAmount();
         }
      TotalBudgetResponse response = new TotalBudgetResponse();
         response.setMonth(month);
