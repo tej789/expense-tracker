@@ -1,0 +1,797 @@
+{
+	"info": {
+		"_postman_id": "57176083-6baecbc3-ce4f-4097-9373-8789188dfea8",
+		"name": "expence-tracker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Add User",
+					"id": "57176083-fbbe18e6-3898-4b1b-847a-c0ad4433bdfa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"USER3\",\n    \"firstname\" : \"Tej\",\n    \"lastname\" : \"Patel\",\n    \"mail\": \"gotitej2005@gmail.com\",\n    \"phone\":\"8160515363\",\n    \"password\" : \"12345\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"id": "57176083-41bf2762-800e-4a15-a62c-4df1b7aa9392",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n            \"username\": \"User2\",\n            \"password\": \"12345\" \n\n        }     \n\n       ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"id": "57176083-88fa57c4-60f4-41c1-89b6-714937592389",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBRE1JTiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc4ODE0NzU4NCwiZXhwIjoxNzg4MTU0Nzg0fQ.rJdjnWqM3KpGuKL3pGiBTv5h8dPdYOtNfDEk98mtxOM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n         \n\n       "
+						},
+						"url": {
+							"raw": "http://localhost:8081/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user By id",
+					"id": "57176083-6b6f0306-1130-4fc2-b191-e6c2d1234cf4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBRE1JTiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc4ODE0NzU4NCwiZXhwIjoxNzg4MTU0Nzg0fQ.rJdjnWqM3KpGuKL3pGiBTv5h8dPdYOtNfDEk98mtxOM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\n       "
+						},
+						"url": {
+							"raw": "http://localhost:8081/user/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By id",
+					"id": "57176083-95c4309e-4e23-4f6a-9e8a-fc83b72275b7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/user/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "57176083-8f49ebe8-e3ea-4658-8cf5-0bc012aac92c"
+		},
+		{
+			"name": "Budget",
+			"item": [
+				{
+					"name": "Add Budget",
+					"id": "57176083-cc964b17-e758-4431-a91e-f4799f516e16",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ3OTA4LCJleHAiOjE3ODgxNTUxMDh9.fUyHd7ujQO1Sp5soAgHmCoR_WTLqMf9f5Oi4rFZWjSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n            \"category\": \"Food\" ,\n            \"amount\": 5000,\n            \"month\":\"AUGUST\",\n            \"year\":2026\n\n        }   \n\n       ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/budget",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"budget"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Budget",
+					"id": "57176083-74587350-6711-423a-98ad-6f2f94c9194c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ3OTA4LCJleHAiOjE3ODgxNTUxMDh9.fUyHd7ujQO1Sp5soAgHmCoR_WTLqMf9f5Oi4rFZWjSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/budget?month=AUGUST&year=2026&category=Food",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"budget"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST"
+								},
+								{
+									"key": "year",
+									"value": "2026"
+								},
+								{
+									"key": "category",
+									"value": "Food"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Budgets",
+					"id": "57176083-98f2b117-7a1f-4283-b8bf-5a2666bf0f0d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTU3NDY2LCJleHAiOjE3ODgxNjQ2NjZ9.TgroKIte5qh74pFNz31Ch9w_8VTImsuyOngXu_amyyA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/allbudgets?month=AUGUST&year=2026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"allbudgets"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST"
+								},
+								{
+									"key": "year",
+									"value": "2026"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Budget",
+					"id": "57176083-d24b0b65-6ffd-4cb3-b425-70446494f6f0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ3OTA4LCJleHAiOjE3ODgxNTUxMDh9.fUyHd7ujQO1Sp5soAgHmCoR_WTLqMf9f5Oi4rFZWjSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"category\": \"Food\",\n        \"amount\": 5050,\n        \"month\": \"AUGUST\",\n        \"year\": \"2026\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/budget",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"budget"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Budget",
+					"id": "57176083-94b953aa-9d72-4d7b-8ee5-ef5329e60b11",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyMiIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg3ODAxOTczLCJleHAiOjE3ODc4MDkxNzN9.H8rgQn6neBUyDpvej8l-uiz9-YLU3kGP7qdldkVcTDc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/budget?month=8&year=2026&category=Entertainment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"budget"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "8"
+								},
+								{
+									"key": "year",
+									"value": "2026"
+								},
+								{
+									"key": "category",
+									"value": "Entertainment"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get total monthly budget",
+					"id": "57176083-f53b95f6-4e07-427b-8ff5-6cfd6baf5525",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTcwMzUyLCJleHAiOjE3ODgxNzc1NTJ9.EshqaRChKA-G7DAidovgECIs5nVYmncofZcvCpn_xF0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/budget/total?month=AUGUST&year=2026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"budget",
+								"total"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST"
+								},
+								{
+									"key": "year",
+									"value": "2026"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "57176083-4592f4b3-3deb-431b-9f26-7ff2c38b1259"
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Add Transaction",
+					"id": "57176083-df1a963e-a66e-47be-b43a-265c1e42242e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ3OTA4LCJleHAiOjE3ODgxNTUxMDh9.fUyHd7ujQO1Sp5soAgHmCoR_WTLqMf9f5Oi4rFZWjSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 3000,\n    \"description\": \"Food Bill\",\n    \"transactionDate\" : \"2026-08-29\",\n    \"type\" : \"EXPENSE\",\n    \"category\" : \"Food\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get transaction",
+					"id": "57176083-6763aed9-1754-464a-a506-71e41902771b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ3OTA4LCJleHAiOjE3ODgxNTUxMDh9.fUyHd7ujQO1Sp5soAgHmCoR_WTLqMf9f5Oi4rFZWjSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\n       "
+						},
+						"url": {
+							"raw": "http://localhost:8081/transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Transaction",
+					"id": "57176083-f5156579-a294-4c78-8980-b45ab5b58d34",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyMSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg3NzM3MzgwLCJleHAiOjE3ODc3NDQ1ODB9.K3UjNtYDQGng11Sn3NA5UY4xQWuDMIKifjPrFenDl7Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n    \n        \"amount\": 3330.0,\n        \"description\": \"Rent of my PG\", \n        \"transactionDate\": \"2026-08-25\",\n        \"type\": \"EXPENSE\",\n        \"category\": \"Housing\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/transaction/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transaction",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Transaction",
+					"id": "57176083-e96114d2-0ff1-49bc-8299-4b22f00f17cf",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyMiIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg3NzI1NjcwLCJleHAiOjE3ODc3MzI4NzB9.IWhxuGHMBHFacGAUZ5Zjd68w58QHTlTkjkkwZB1ciMo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/transaction/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transaction",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transaction by month",
+					"id": "57176083-47c1c062-93a9-40ea-858b-9a8b941a5033",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTc0MTM3LCJleHAiOjE3ODgxODEzMzd9.4zHhiX0iguEJaTRJrp3qviFdFMkRxcdXf37X_kn8Yuc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/transaction/month?month=AUGUST&year=2026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transaction",
+								"month"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2026",
+									"type": "text"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get total monthly Expense",
+					"id": "57176083-ee3dba19-394b-4595-984c-1b9bf69db665",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"id": "57176083-b5e5c099-2824-40c6-b8e1-a0f1898d2985"
+		},
+		{
+			"name": "Monthly Summary",
+			"item": [
+				{
+					"name": "summary",
+					"id": "57176083-5e2c9734-e99e-4da1-a9e0-f1631fedda28",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTQ4NzYzLCJleHAiOjE3ODgxNTU5NjN9.LxGZN9PrL_wJS5mSnKbbR1Kp6FwVSo0Kk6Z9lLqPxpY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8081/summary?month=AUGUST&year=2026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"summary"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST",
+									"type": "text"
+								},
+								{
+									"key": "year",
+									"value": "2026",
+									"type": "text"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "summary by category",
+					"id": "57176083-75e2c543-6fcc-41b7-b2f1-5940a0357e31",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVU0VSMyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg4MTc0MTM3LCJleHAiOjE3ODgxODEzMzd9.4zHhiX0iguEJaTRJrp3qviFdFMkRxcdXf37X_kn8Yuc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/summary?month=AUGUST&year=2026&category=Food",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"summary"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "AUGUST"
+								},
+								{
+									"key": "year",
+									"value": "2026"
+								},
+								{
+									"key": "category",
+									"value": "Food"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "57176083-e27f9921-ca41-4548-83d3-4f432698aef5"
+		}
+	]
+}
