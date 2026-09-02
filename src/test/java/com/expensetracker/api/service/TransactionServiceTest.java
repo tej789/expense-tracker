@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -125,9 +126,33 @@ public class TransactionServiceTest {
     }
 
 
+    @Test
     void CannotUpdateTransactionWithoutAuthorizeUser(){
+        User user = new User();
+        user.setId(1);
+        user.setUsername("tej");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("tej",null)
+        );
+
+        when(userRepository.findByUsername("tej"))
+                .thenReturn(Optional.of(user));
 
 
+        int transactionId =4;
 
+        when(transactionRepository.findByIdAndUserId(
+                transactionId,
+                user.getId()
+        )).thenReturn(Optional.empty());
+
+        TransactionRequest request = new TransactionRequest();
+
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> transactionService.updateTransaction(transactionId,request)
+        );
     }
 }
