@@ -78,6 +78,7 @@ public class TransactionServiceTest {
 
         TransactionRequest request = new TransactionRequest();
         request.setAmount(100);
+        request.setTransactionDate(LocalDate.now());
 
         when(userRepository.findByUsername("tej"))
                 .thenReturn(Optional.empty());
@@ -123,8 +124,12 @@ public class TransactionServiceTest {
         request.setAmount(100);
         request.setTransactionDate(LocalDate.now().plusDays(1));
 
-    }
+        assertThrows(
+                IllegalArgumentException.class,
+                ()->transactionService.addTransaction(request)
+        );
 
+    }
 
     @Test
     void CannotUpdateTransactionWithoutAuthorizeUser(){

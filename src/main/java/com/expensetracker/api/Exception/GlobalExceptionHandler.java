@@ -2,6 +2,7 @@ package com.expensetracker.api.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,12 +22,21 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Response> InvalidBook(
+    public ResponseEntity<Response> InvalidDataField(
             IllegalArgumentException e
     ) {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new Response("Invallid Data", e.getMessage()));
+                .body(new Response("Invalid Data", e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Response> handleValidationException(
+            MethodArgumentNotValidException e) {
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new Response("Validation Error", e.getMessage()));
     }
 }

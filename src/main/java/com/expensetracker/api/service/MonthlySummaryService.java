@@ -16,6 +16,7 @@ import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class MonthlySummaryService {
@@ -55,6 +56,11 @@ public class MonthlySummaryService {
                 category
         );
 
+        double budgetAmount =0;
+
+        if(budget != null){
+            budgetAmount =budget.getAmount();
+        }
         LocalDate startDate =
                 LocalDate.of(year.getValue(), month, 1);
 
@@ -76,14 +82,14 @@ public class MonthlySummaryService {
 
         for(Transaction transaction : transactions)
         {
-       if(transaction.getCategory() == budget.getCategory() ){
+       if(transaction.getCategory() == category ){
            spent = spent + transaction.getAmount();
        }
         }
 
      MonthlySummaryResponse res =  new MonthlySummaryResponse(
-                 budget.getCategory(),
-        budget.getAmount(),
+             category,
+             budgetAmount,
         spent
     );
 
@@ -93,67 +99,81 @@ public class MonthlySummaryService {
 
 
 
-    public List<MonthlySummaryResponse> getMonthlySummary(
-            Month month,
-            Year year) {
+ public List<MonthlySummaryResponse> getMonthlySummary(
+        Month month,
+        Year year) {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getName();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() ->
+                    new NoSuchElementException("User not found"));
 
-        int userId = user.getId();
+    int userId = user.getId();
 
-        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYear(
-                        userId,
-                        month,
-                        year
-                );
+    List<Budget> budgets =
+            budgetRepository.findByUserIdAndMonthAndYear(
+                    userId,
+                    month,
+                    year
+            );
 
-        LocalDate startDate =
-                LocalDate.of(year.getValue(), month, 1);
+    LocalDate startDate =
+            LocalDate.of(year.getValue(), month, 1);
 
-        LocalDate endDate =
-                LocalDate.of(
-                        year.getValue(),
-                        month,
-                        month.length(year.isLeap())
-                );
+    LocalDate endDate =
+            LocalDate.of(
+                    year.getValue(),
+                    month,
+                    month.length(year.isLeap())
+            );
 
-        List<Transaction> transactions = transactionRepository
-                        .findByUserIdAndTransactionDateBetween(
-                                userId,
-                                startDate,
-                                endDate
-                        );
+    List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+                    userId,
+                    startDate,
+                    endDate
+            );
 
-        List<MonthlySummaryResponse> summary = new ArrayList<>();
+    List<MonthlySummaryResponse> summary = new ArrayList<>();
+
+    for (CategoryType category : CategoryType.values()) {
+
+        double budgetAmount = 0;
+        double spent = 0;
 
         for (Budget budget : budgets) {
 
-            double spent = 0;
-
-
-            for (Transaction transaction : transactions) {
-
-                if (transaction.getCategory()
-                        == budget.getCategory()) {
-
-                    spent = spent + transaction.getAmount();
-                }
+            if (budget.getCategory() == category) {
+                budgetAmount = budget.getAmount();
+                break;
             }
+        }
 
+        for (Transaction transaction : transactions) {
 
-            MonthlySummaryResponse response = new MonthlySummaryResponse(
-                            budget.getCategory(),
-                            budget.getAmount(),
+            if (transaction.getCategory() == category) {
+                spent = spent + transaction.getAmount();
+            }
+        }
+
+        if (budgetAmount > 0 || spent > 0) {
+
+            MonthlySummaryResponse response =
+                    new MonthlySummaryResponse(
+                            category,
+                            budgetAmount,
                             spent
                     );
 
             summary.add(response);
         }
-
-        return summary;
     }
+
+    return summary;
+}
+
 }
 

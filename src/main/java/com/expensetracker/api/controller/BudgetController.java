@@ -3,6 +3,7 @@ package com.expensetracker.api.controller;
 
 import com.expensetracker.api.DTO.BudgetRequest;
 import com.expensetracker.api.DTO.BudgetResponse;
+import com.expensetracker.api.DTO.MessageResponse;
 import com.expensetracker.api.DTO.TotalBudgetResponse;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.service.BudgetService;
@@ -74,14 +75,17 @@ public class BudgetController {
 
     @DeleteMapping("/budget")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteBudget(
-            @RequestParam Month month,@RequestParam Year year ,@RequestParam CategoryType category
-    ){
+    public ResponseEntity<MessageResponse> deleteBudget(
+            @RequestParam Month month,
+            @RequestParam Year year,
+            @RequestParam CategoryType category
+    ) {
 
-        budgetService.deleteBudget(month,year,category);
+        budgetService.deleteBudget(month, year, category);
 
-        return new ResponseEntity<>("Budget Deleted Successfully",HttpStatus.OK);
-
+        return ResponseEntity.ok(
+                new MessageResponse("Budget Deleted Successfully")
+        );
     }
 
 

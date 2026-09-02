@@ -35,8 +35,11 @@ public class TransactionService {
 
     public TransactionResponse addTransaction(TransactionRequest request) {
 
-        if (request.getAmount() <= 0) {
+        if (request.getAmount() < 1) {
             throw new IllegalArgumentException("Transaction amount must be greater than 0");
+        }
+        if (request.getTransactionDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Transaction date cannot be in the future");
         }
         String username = SecurityContextHolder
                 .getContext()
@@ -56,9 +59,7 @@ public class TransactionService {
         transaction.setUser(user);
 
 
-        if (request.getTransactionDate().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Transaction date cannot be in the future");
-        }
+
 
         transactionRepository.save(transaction);
 
@@ -228,3 +229,5 @@ public TotalExpenseResponse getTotalMonthlyExpense(Month month,Year year){
 
 
 }
+
+

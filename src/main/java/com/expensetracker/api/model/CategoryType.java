@@ -6,5 +6,4 @@ public enum CategoryType {
     Housing,
     Entertainment,
     Other
-
 }

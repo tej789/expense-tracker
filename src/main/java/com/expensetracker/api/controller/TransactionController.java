@@ -1,10 +1,13 @@
 package com.expensetracker.api.controller;
 
+import com.expensetracker.api.DTO.MessageResponse;
 import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.TransactionService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +34,7 @@ private final TransactionService transactionService;
 
 @PostMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
-public ResponseEntity<TransactionResponse> add(@RequestBody TransactionRequest request){
+public ResponseEntity<TransactionResponse> add(@Valid @RequestBody TransactionRequest request){
     TransactionResponse msg = transactionService.addTransaction(request);
     return new ResponseEntity<>(msg, HttpStatus.CREATED);
 }
@@ -80,11 +83,15 @@ public ResponseEntity<TransactionResponse> add(@RequestBody TransactionRequest r
 
     @DeleteMapping("/transaction/{transactionId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteTransaction(
-            @PathVariable("transactionId") int transactionId){
+    public ResponseEntity<MessageResponse> deleteTransaction(
+            @PathVariable("transactionId") int transactionId
+    ) {
 
         transactionService.deleteTransaction(transactionId);
-    return new ResponseEntity<>("Transaction Deleted Successfully",HttpStatus.OK);
+
+        return ResponseEntity.ok(
+                new MessageResponse("Transaction Deleted Successfully")
+        );
     }
 
 }

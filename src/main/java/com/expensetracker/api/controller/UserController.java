@@ -40,16 +40,15 @@ public class UserController {
         return new ResponseEntity<>(user,HttpStatus.OK);
   }
 
+
     @DeleteMapping("/user/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
-  public String deleteUserById(
-          @PathVariable("id") int id
-  ){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> deleteUser(@PathVariable int id) {
+
         userService.deleteUserById(id);
-        return "User with ID " + id + " has been deleted.";
-  }
 
-
-
-
+        return ResponseEntity.ok(
+                new MessageResponse("User deleted successfully")
+        );
+    }
 }

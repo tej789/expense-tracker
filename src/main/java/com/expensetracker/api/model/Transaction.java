@@ -2,6 +2,8 @@ package com.expensetracker.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +17,9 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
+    @Positive
     private double amount;
     private String description;
     private LocalDate transactionDate;
@@ -29,7 +34,6 @@ public class Transaction {
     @JsonIgnore
     @JoinColumn(name="user_id",nullable = false)
     private User user;
-
 
 
 }

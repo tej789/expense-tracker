@@ -5,7 +5,11 @@ import com.expensetracker.api.DTO.RegisterRequest;
 import com.expensetracker.api.DTO.RegisterResponse;
 import com.expensetracker.api.DTO.UserResponse;
 import com.expensetracker.api.model.User;
+import com.expensetracker.api.repository.BudgetRepository;
+import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +20,14 @@ import com.expensetracker.api.model.Role;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BudgetRepository budgetRepository;
+    private final TransactionRepository transactionRepository;
 
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,BudgetRepository budgetRepository,TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
+        this.budgetRepository =budgetRepository;
+        this.transactionRepository =transactionRepository;
     }
 
 
@@ -63,11 +71,33 @@ return u;
         return res;
     }
 
-    public void deleteUserById(int id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+    @Transactional
+    public void deleteUserById(int userId) {
+
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new NoSuchElementException("Admin not found"));
+
+        if (currentUser.getId() == userId)
+        {throw new IllegalArgumentException(
+                    "Admin cannot delete their own account");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new NoSuchElementException("User not found"));
+
+        transactionRepository.deleteByUserId(userId);
+
+        budgetRepository.deleteByUserId(userId);
 
         userRepository.delete(user);
-
     }
 }
+
