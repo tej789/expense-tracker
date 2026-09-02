@@ -31,7 +31,6 @@ public class Transaction {
     private CategoryType category;
 
     @ManyToOne(fetch =FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 
