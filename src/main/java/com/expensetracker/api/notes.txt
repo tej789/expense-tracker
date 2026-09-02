@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Added Monthly Individual Category summary, Write some JUnit test
+=> Write business logic and implement some JUnit tests
 Tomorrow:
-=> JUnit test
+=> Add other JUnit test
 Impediments:
 => NONE
 GitHub:
