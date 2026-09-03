@@ -111,13 +111,12 @@ public class TransactionService {
 
         int id = user.getId();
 
-        LocalDate startDate =
-                LocalDate.of(year.getValue(), month, 1);
+        LocalDate startDate = LocalDate.of(year.getValue(), month, 1);
 
         LocalDate endDate = LocalDate.of(
-                        year.getValue(),
-                        month,
-                        month.length(year.isLeap())
+                year.getValue(),
+                month,
+                month.length(year.isLeap())
                 );
 
         List<Transaction> transactions =

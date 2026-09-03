@@ -72,7 +72,7 @@ public class BudgetService
     }
 
 
-   public BudgetResponse getBudget(java.time.Month month, java.time.Year year, CategoryType category){
+   public BudgetResponse getBudget(Month month, Year year, CategoryType category){
 
        String username = SecurityContextHolder.getContext().getAuthentication().getName();
        User user = userRepository.findByUsername(username)
