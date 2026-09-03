@@ -32,13 +32,13 @@ import static org.mockito.Mockito.when;
 public class MonthlySummaryServiceTest {
 
     @Mock
-    private  BudgetRepository budgetRepository;
+      BudgetRepository budgetRepository;
 
     @Mock
-    private  TransactionRepository transactionRepository;
+      TransactionRepository transactionRepository;
 
     @Mock
-    private UserRepository userRepository;
+     UserRepository userRepository;
 
     @InjectMocks
     private MonthlySummaryService monthlySummaryService;

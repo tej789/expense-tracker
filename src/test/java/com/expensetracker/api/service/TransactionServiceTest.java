@@ -26,13 +26,13 @@ import static org.mockito.Mockito.when;
 public class TransactionServiceTest {
 
     @Mock
-    private TransactionRepository transactionRepository;
+     TransactionRepository transactionRepository;
 
     @Mock
-    private UserRepository userRepository;
+     UserRepository userRepository;
 
     @InjectMocks
-    private TransactionService transactionService;
+     TransactionService transactionService;
 
     @Test
     void shouldRejectZeroAmount() {

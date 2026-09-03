@@ -20,13 +20,13 @@ import static org.mockito.Mockito.when;
 public class AuthServiceTest {
 
     @Mock
-    private UserRepository userRepository;
+     UserRepository userRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+     PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private AuthService authService;
+     AuthService authService;
 
     @Test
     void shouldNotRegisterExistingUser() {
