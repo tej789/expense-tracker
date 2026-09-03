@@ -111,9 +111,14 @@ public class TransactionService {
 
         int id = user.getId();
 
-        YearMonth yearMonth = YearMonth.of(year.getValue(), month);
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
+        LocalDate startDate =
+                LocalDate.of(year.getValue(), month, 1);
+
+        LocalDate endDate = LocalDate.of(
+                        year.getValue(),
+                        month,
+                        month.length(year.isLeap())
+                );
 
         List<Transaction> transactions =
                 transactionRepository.findByUserIdAndTransactionDateBetween(id, startDate, endDate);

@@ -44,7 +44,7 @@ public class MonthlySummaryServiceTest {
     private MonthlySummaryService monthlySummaryService;
 
     @Test
-    void CategoryBudgetWithinOrOver(){
+    void CategoryBudgetExpenseWithinOrOver(){
         User user = new User();
         user.setId(1);
         user.setUsername("tej");

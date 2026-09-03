@@ -101,18 +101,18 @@ public class BudgetService
 
        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYear(user.getId(),month,year);
 
-       List<BudgetResponse> dtoList = new ArrayList<>();
+       List<BudgetResponse> List = new ArrayList<>();
        for (Budget budget : budgets) {
 
-           BudgetResponse dto = new BudgetResponse();
-           dto.setAmount(budget.getAmount());
-           dto.setMonth(budget.getMonth());
-           dto.setYear(budget.getYear());
-           dto.setCategory(budget.getCategory());
+           BudgetResponse response = new BudgetResponse();
+           response.setAmount(budget.getAmount());
+           response.setMonth(budget.getMonth());
+           response.setYear(budget.getYear());
+           response.setCategory(budget.getCategory());
 
-           dtoList.add(dto);
+           List.add(response);
        }
-       return dtoList;
+       return List;
     }
 
     public BudgetResponse updateBudget(BudgetRequest request){

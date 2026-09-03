@@ -75,10 +75,7 @@ return u;
     @Transactional
     public void deleteUserById(int userId) {
 
-        String username = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() ->
@@ -89,8 +86,7 @@ return u;
                     "Admin cannot delete their own account");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
+        User user = userRepository.findById(userId).orElseThrow(() ->
                         new NoSuchElementException("User not found"));
 
         transactionRepository.deleteByUserId(userId);

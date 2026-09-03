@@ -16,6 +16,5 @@ public class TransactionResponse {
     private TransactionType type;
     private CategoryType category;
 
-    public TransactionResponse() {
-    }
+    public TransactionResponse() {}
 }

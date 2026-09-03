@@ -12,9 +12,7 @@ import java.util.NoSuchElementException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Response> UserNotFound(
-            NoSuchElementException e) {
-
+    public ResponseEntity<Response> UserNotFound(NoSuchElementException e) {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new Response("Not Found", e.getMessage()));
@@ -22,18 +20,14 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Response> InvalidDataField(
-            IllegalArgumentException e
-    ) {
+    public ResponseEntity<Response> InvalidDataField(IllegalArgumentException e) {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new Response("Invalid Data", e.getMessage()));
     }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response> handleValidationException(
-            MethodArgumentNotValidException e) {
+    public ResponseEntity<Response> handleValidationException(MethodArgumentNotValidException e) {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
