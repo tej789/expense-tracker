@@ -123,7 +123,7 @@ public class BudgetService
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
 
-        Budget budget = (Budget) budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
                 user.getId(), request.getCategory(), request.getMonth(), request.getYear()
         ).orElseThrow(() -> new NoSuchElementException("Budget not found for this category, month, and year."));
 
