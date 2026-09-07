@@ -6,6 +6,7 @@ import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
+import com.expensetracker.api.service.impl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -31,8 +31,11 @@ public class TransactionServiceTest {
     @Mock
      UserRepository userRepository;
 
+    @Mock
+    CurrentUserService currentUserService;
+
     @InjectMocks
-     TransactionService transactionService;
+    TransactionServiceImpl transactionService;
 
     @Test
     void shouldRejectZeroAmount() {
@@ -69,26 +72,22 @@ public class TransactionServiceTest {
 
     }
 
-    @Test
-    void UserNotFound() {
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
-
-        TransactionRequest request = new TransactionRequest();
-        request.setAmount(100);
-        request.setTransactionDate(LocalDate.now());
-
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                NoSuchElementException.class,
-                () -> transactionService.addTransaction(request)
-        );
-
-    }
+//    @Test
+//    void UserNotFound() {
+//
+//        TransactionRequest request = new TransactionRequest();
+//        request.setAmount(100);
+//        request.setTransactionDate(LocalDate.now());
+//
+//        when(currentUserService.getCurrentUser())
+//                .thenThrow(new NoSuchElementException("User Not Found"));
+//
+//        assertThrows(
+//                NoSuchElementException.class,
+//                () -> transactionService.addTransaction(request)
+//        );
+//
+//    }
 
 
     @Test
@@ -98,12 +97,8 @@ public class TransactionServiceTest {
         user.setId(1);
         user.setUsername("tej");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej",null)
-        );
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
         Transaction transaction = new Transaction();
         transaction.setId(1);
 

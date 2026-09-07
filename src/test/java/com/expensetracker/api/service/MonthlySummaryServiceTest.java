@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.expensetracker.api.DTO.BudgetRequest;
 import com.expensetracker.api.DTO.MonthlySummaryResponse;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.CategoryType;
@@ -13,6 +12,7 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
+import com.expensetracker.api.service.impl.MonthlySummaryServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Month;
 import java.time.Year;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -38,10 +37,10 @@ public class MonthlySummaryServiceTest {
       TransactionRepository transactionRepository;
 
     @Mock
-     UserRepository userRepository;
+     CurrentUserService currentUserService;
 
     @InjectMocks
-    private MonthlySummaryService monthlySummaryService;
+    private MonthlySummaryServiceImpl monthlySummaryService;
 
     @Test
     void CategoryBudgetExpenseWithinOrOver(){
@@ -49,13 +48,7 @@ public class MonthlySummaryServiceTest {
         user.setId(1);
         user.setUsername("tej");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej",null)
-        );
-
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
-
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
         Budget budget =new Budget();
         budget.setMonth(Month.AUGUST);

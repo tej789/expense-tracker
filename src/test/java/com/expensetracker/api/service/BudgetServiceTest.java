@@ -7,6 +7,7 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.UserRepository;
 
+import com.expensetracker.api.service.impl.BudgetServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,8 +34,11 @@ class BudgetServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    CurrentUserService currentUserService;
+
     @InjectMocks
-    BudgetService budgetService;
+    BudgetServiceImpl budgetService;
 
 
     @Test
@@ -65,12 +69,7 @@ class BudgetServiceTest {
         request.setYear(Year.of(2026));
         request.setAmount(5000);
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
-
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
         when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
                 1,
@@ -92,11 +91,7 @@ class BudgetServiceTest {
         user.setId(1);
         user.setUsername("tej");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
         BudgetRequest request = new BudgetRequest();
 
@@ -119,11 +114,7 @@ class BudgetServiceTest {
         user.setId(1);
         user.setUsername("tej");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej", null)
-        );
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
         BudgetRequest request = new BudgetRequest();
         request.setMonth(Month.AUGUST);

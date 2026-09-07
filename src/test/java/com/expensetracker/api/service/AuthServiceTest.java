@@ -4,6 +4,7 @@ import com.expensetracker.api.DTO.RegisterRequest;
 import com.expensetracker.api.model.Role;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
+import com.expensetracker.api.service.impl.AuthServiceImpl;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +23,8 @@ public class AuthServiceTest {
     @Mock
      UserRepository userRepository;
 
-    @Mock
-     PasswordEncoder passwordEncoder;
-
     @InjectMocks
-     AuthService authService;
+    AuthServiceImpl authService;
 
     @Test
     void shouldNotRegisterExistingUser() {
