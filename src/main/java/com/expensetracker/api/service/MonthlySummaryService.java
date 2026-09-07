@@ -14,11 +14,9 @@ public interface MonthlySummaryService {
             CategoryType category
     );
 
-
      List<MonthlySummaryResponse> getMonthlySummary(
             Month month,
             Year year);
-
 
 }
 

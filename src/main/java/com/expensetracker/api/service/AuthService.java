@@ -1,6 +1,5 @@
 package com.expensetracker.api.service;
 
-
 import com.expensetracker.api.DTO.LoginRequest;
 import com.expensetracker.api.DTO.RegisterRequest;
 import com.expensetracker.api.DTO.RegisterResponse;

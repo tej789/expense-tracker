@@ -2,7 +2,6 @@ package com.expensetracker.api.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.expensetracker.api.DTO.MonthlySummaryResponse;
 import com.expensetracker.api.model.Budget;
@@ -11,15 +10,12 @@ import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
-import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.impl.MonthlySummaryServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Month;
 import java.time.Year;

@@ -23,5 +23,4 @@ public interface BudgetService
 
      TotalBudgetResponse getTotalMonthlyBudget(Month month, Year year);
 
-
 }

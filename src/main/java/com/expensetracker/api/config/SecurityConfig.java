@@ -1,7 +1,5 @@
 package com.expensetracker.api.config;
 
-
-
 import com.expensetracker.api.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +44,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 }

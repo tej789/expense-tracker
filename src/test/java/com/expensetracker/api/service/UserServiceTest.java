@@ -4,7 +4,6 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
-import com.expensetracker.api.service.impl.CurrentUserServiceImpl;
 import com.expensetracker.api.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +29,8 @@ public class UserServiceTest {
     @Mock
     BudgetRepository budgetRepository;
 
-    @Mock
-    CurrentUserService currentUserService;
-
     @InjectMocks
     UserServiceImpl userService;
-
 
     @Test
     void shouldDeleteUserWithTransactionsAndBudgets() {
@@ -48,7 +43,13 @@ public class UserServiceTest {
         user.setId(2);
         user.setUsername("user1");
 
-        when(currentUserService.getCurrentUser()).thenReturn(admin);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("admin", null)
+        );
+
+        when(userRepository.findByUsername("admin"))
+                .thenReturn(Optional.of(admin));
+
         when(userRepository.findById(2))
                 .thenReturn(Optional.of(user));
 
