@@ -54,6 +54,10 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
+        if(!user.isActive()){
+            throw new IllegalArgumentException("User Account Is Inactive");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid password");
         }

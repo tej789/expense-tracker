@@ -102,7 +102,7 @@ public class TransactionServiceTest {
         Transaction transaction = new Transaction();
         transaction.setId(1);
 
-        when(transactionRepository.findByIdAndUserId(transaction.getId(),user.getId()))
+        when(transactionRepository.findByIdAndUserIdAndActiveTrue(transaction.getId(),user.getId()))
                 .thenReturn(Optional.empty());
 
         assertThrows(
@@ -142,7 +142,7 @@ public class TransactionServiceTest {
 
         int transactionId =4;
 
-        when(transactionRepository.findByIdAndUserId(
+        when(transactionRepository.findByIdAndUserIdAndActiveTrue(
                 transactionId,
                 user.getId()
         )).thenReturn(Optional.empty());

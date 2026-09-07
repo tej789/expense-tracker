@@ -71,7 +71,7 @@ class BudgetServiceTest {
 
         when(currentUserService.getCurrentUser()).thenReturn(user);
 
-        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
                 1,
                 CategoryType.Food,
                 Month.MARCH,
@@ -95,7 +95,7 @@ class BudgetServiceTest {
 
         BudgetRequest request = new BudgetRequest();
 
-        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
                 1,
                 request.getCategory(),
                 request.getMonth(),
@@ -122,7 +122,7 @@ class BudgetServiceTest {
         request.setCategory(CategoryType.Food);
 
 
-        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        when(budgetRepository.findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
                 1,
                 request.getCategory(),
                 request.getMonth(),

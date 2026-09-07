@@ -1,6 +1,5 @@
 package com.expensetracker.api.service.impl;
 
-
 import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
@@ -10,8 +9,6 @@ import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.TransactionService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,12 +22,10 @@ import java.util.Optional;
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
-    private final UserRepository userRepository;
     private final CurrentUserService currentUserService;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository,UserRepository userRepository,CurrentUserService currentUserService){
+    public TransactionServiceImpl(TransactionRepository transactionRepository,CurrentUserService currentUserService){
         this.transactionRepository = transactionRepository;
-        this.userRepository = userRepository;
         this.currentUserService = currentUserService;
     }
 
@@ -74,7 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = currentUserService.getCurrentUser();
 
         int id = user.getId();
-        List<Transaction> transactions = transactionRepository.findByUserId(id);
+        List<Transaction> transactions = transactionRepository.findByUserIdAndActiveTrue(id);
         List<TransactionResponse> responses = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
@@ -109,7 +104,7 @@ public class TransactionServiceImpl implements TransactionService {
         );
 
         List<Transaction> transactions =
-                transactionRepository.findByUserIdAndTransactionDateBetween(id, startDate, endDate);
+                transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(id, startDate, endDate);
 
         List<TransactionResponse> res = new ArrayList<>();
 
@@ -130,14 +125,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponse updateTransaction(int transactionId , TransactionRequest request){
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException("No user Found with this Transaction"));
-
+        User user = currentUserService.getCurrentUser();
         int userId = user.getId();
 
-        Optional<Transaction> transactions = transactionRepository.findByIdAndUserId(transactionId, userId);
+        Optional<Transaction> transactions = transactionRepository.findByIdAndUserIdAndActiveTrue(transactionId, userId);
 
         if (transactions.isEmpty()) {
             throw new NoSuchElementException("Transaction not found or you are not authorized to update it.");
@@ -176,7 +167,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = currentUserService.getCurrentUser();
 
         int userId = user.getId();
-        Optional<Transaction> transactions = transactionRepository.findByIdAndUserId(transactionId, userId);
+        Optional<Transaction> transactions = transactionRepository.findByIdAndUserIdAndActiveTrue(transactionId, userId);
 
         if (transactions.isEmpty()) {
             throw new NoSuchElementException("Transaction not found or you are not authorized to delete it.");
@@ -184,7 +175,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction t = transactions.get();
 
-        transactionRepository.delete(t);
+        t.setActive(false);
+        transactionRepository.save(t);
     }
 
     @Override
@@ -198,7 +190,7 @@ public class TransactionServiceImpl implements TransactionService {
         LocalDate endDate =
                 LocalDate.of(year.getValue(), month, month.length(year.isLeap()));
 
-        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(
                 userId,
                 startDate,
                 endDate

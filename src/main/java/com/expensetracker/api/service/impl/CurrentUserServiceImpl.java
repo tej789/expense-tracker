@@ -23,7 +23,13 @@ public class CurrentUserServiceImpl implements CurrentUserService {
     public User getCurrentUser(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return userRepository.findByUsername(username)
+        User user= userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
+
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("User account is inactive");
+        }
+
+        return user;
     }
 }

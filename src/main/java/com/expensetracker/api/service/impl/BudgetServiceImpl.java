@@ -16,6 +16,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class BudgetServiceImpl  implements BudgetService {
@@ -35,9 +36,14 @@ public class BudgetServiceImpl  implements BudgetService {
 
         User user = currentUserService.getCurrentUser();
 
-        boolean exists = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
-                user.getId(), request.getCategory(), request.getMonth(), request.getYear()
-        ).isPresent();
+        boolean exists = budgetRepository
+                .findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
+                        user.getId(),
+                        request.getCategory(),
+                        request.getMonth(),
+                        request.getYear()
+                )
+                .isPresent();
 
         if (exists) {
             throw new IllegalArgumentException("Budget already exists for this category in the specified month and year.");
@@ -70,10 +76,16 @@ public class BudgetServiceImpl  implements BudgetService {
 
         User user = currentUserService.getCurrentUser();
 
-        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
-                user.getId(), request.getCategory(), request.getMonth(), request.getYear()
-        ).orElseThrow(() -> new NoSuchElementException("Budget not found for this category, month, and year."));
-
+        Budget budget = budgetRepository
+                .findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
+                        user.getId(),
+                        request.getCategory(),
+                        request.getMonth(),
+                        request.getYear()
+                )
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "Budget not found for this category, month, and year."));
         budget.setAmount(request.getAmount());
 
         budgetRepository.save(budget);
@@ -88,56 +100,82 @@ public class BudgetServiceImpl  implements BudgetService {
         return response;
     }
 
-
     @Override
-    public BudgetResponse getBudget(Month month, Year year, CategoryType category){
+    public BudgetResponse getBudget(
+            Month month,
+            Year year,
+            CategoryType category) {
 
         User user = currentUserService.getCurrentUser();
 
-        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
-                user.getId(), category, month, year
-        ).orElseThrow(() -> new NoSuchElementException("No budget set for this category in the specified month and year."));
+        Optional<Budget> budget =
+                budgetRepository.findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
+                        user.getId(), category, month, year
+                );
 
         BudgetResponse response = new BudgetResponse();
-        response.setAmount(budget.getAmount());
-        response.setMonth(budget.getMonth());
-        response.setYear(budget.getYear());
-        response.setCategory(budget.getCategory());
+
+        response.setCategory(category);
+        response.setMonth(month);
+        response.setYear(year);
+
+        if (budget.isPresent()) {
+            response.setAmount(budget.get().getAmount());
+        } else {
+            response.setAmount(0);
+        }
 
         return response;
     }
-
     @Override
     public void deleteBudget(Month month, Year year, CategoryType category) {
         User user = currentUserService.getCurrentUser();
 
-        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYear(
+        Budget budget = budgetRepository.findByUserIdAndCategoryAndMonthAndYearAndActiveTrue(
                 user.getId(), category, month, year
         ).orElseThrow(() -> new NoSuchElementException("No budget found for this category in the specified month and year."));
 
-        budgetRepository.delete(budget);
+        budget.setActive(false);
+        budgetRepository.save(budget);
     }
 
-    @Override
-    public List<BudgetResponse> getAllBudgets(Month month, Year year){
+        @Override
+public List<BudgetResponse> getAllBudgets(Month month, Year year) {
 
-        User user = currentUserService.getCurrentUser();
+    User user = currentUserService.getCurrentUser();
 
-        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYear(user.getId(),month,year);
+            List<Budget> budgets =
+                    budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
+                            user.getId(), month, year
+                    );
 
-        List<BudgetResponse> List = new ArrayList<>();
+    List<BudgetResponse> responses = new ArrayList<>();
+
+    for (CategoryType category : CategoryType.values()) {
+
+        BudgetResponse response = new BudgetResponse();
+
+        response.setCategory(category);
+        response.setMonth(month);
+        response.setYear(year);
+
+        double amount = 0;
+
         for (Budget budget : budgets) {
-
-            BudgetResponse response = new BudgetResponse();
-            response.setAmount(budget.getAmount());
-            response.setMonth(budget.getMonth());
-            response.setYear(budget.getYear());
-            response.setCategory(budget.getCategory());
-
-            List.add(response);
+            if (budget.getCategory() == category) {
+                amount = budget.getAmount();
+                break;
+            }
         }
-        return List;
+
+        response.setAmount(amount);
+
+        responses.add(response);
     }
+
+    return responses;
+}
+
 
     @Override
     public TotalBudgetResponse getTotalMonthlyBudget(Month month, Year year){
@@ -148,10 +186,11 @@ public class BudgetServiceImpl  implements BudgetService {
 
         List<Budget> budgets = new ArrayList<>();
 
-        budgets = budgetRepository.findByUserIdAndMonthAndYear(
-                userId,
-                month,year
-        );
+         budgets = budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
+                        userId,
+                        month,
+                        year
+                );
 
         for(Budget budget : budgets){
 
@@ -167,3 +206,4 @@ public class BudgetServiceImpl  implements BudgetService {
     }
 
 }
+

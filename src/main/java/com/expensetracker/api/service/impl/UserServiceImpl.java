@@ -1,13 +1,15 @@
 package com.expensetracker.api.service.impl;
 
 import com.expensetracker.api.DTO.UserResponse;
+import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.repository.UserRepository;
+import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.UserService;
+import com.expensetracker.api.model.Transaction;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,17 +22,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
+    private final CurrentUserService currentUserService;
 
 
-    public UserServiceImpl(UserRepository userRepository,BudgetRepository budgetRepository,TransactionRepository transactionRepository) {
+    public UserServiceImpl(UserRepository userRepository,BudgetRepository budgetRepository,TransactionRepository transactionRepository,CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.budgetRepository =budgetRepository;
         this.transactionRepository =transactionRepository;
+        this.currentUserService = currentUserService;
     }
 
     @Override
     public List<UserResponse> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findByActiveTrue();
 
         List<UserResponse> u =new ArrayList<>();
 
@@ -74,11 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(int userId) {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new NoSuchElementException("Admin not found"));
+        User currentUser = currentUserService.getCurrentUser();
 
         if (currentUser.getId() == userId)
         {throw new IllegalArgumentException(
@@ -88,11 +88,25 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NoSuchElementException("User not found"));
 
-        transactionRepository.deleteByUserId(userId);
+        user.setActive(false);
 
-        budgetRepository.deleteByUserId(userId);
+        List<Transaction> transactions =
+                transactionRepository.findByUserIdAndActiveTrue(userId);
 
-        userRepository.delete(user);
+        for (Transaction transaction : transactions) {
+            transaction.setActive(false);
+        }
+
+        List<Budget> budgets =
+                budgetRepository.findByUserIdAndActiveTrue(userId);
+
+        for (Budget budget : budgets) {
+            budget.setActive(false);
+        }
+
+        userRepository.save(user);
+        transactionRepository.saveAll(transactions);
+        budgetRepository.saveAll(budgets);
     }
 
 }

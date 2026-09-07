@@ -66,7 +66,7 @@ public class MonthlySummaryServiceTest {
      List<Transaction> transactions = new ArrayList<>();
      transactions.add(transaction);
 
-     when(transactionRepository.findByUserIdAndTransactionDateBetween(
+     when(transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(
              user.getId(),
              LocalDate.of(2026,Month.AUGUST,1),
              LocalDate.of(2026,Month.AUGUST,31)

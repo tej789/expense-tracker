@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Write business logic and implement some JUnit tests
+=> Added Required Changes After Review
 Tomorrow:
-=> Add other JUnit test
+=> Add Soft Delete for user,budget and Transaction
 Impediments:
 => NONE
 GitHub:
@@ -11,5 +11,4 @@ GitHub:
 
  */
 
-*/
 

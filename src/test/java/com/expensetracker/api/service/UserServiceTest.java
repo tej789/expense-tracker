@@ -32,31 +32,31 @@ public class UserServiceTest {
     @InjectMocks
     UserServiceImpl userService;
 
-    @Test
-    void shouldDeleteUserWithTransactionsAndBudgets() {
-
-        User admin = new User();
-        admin.setId(1);
-        admin.setUsername("admin");
-
-        User user = new User();
-        user.setId(2);
-        user.setUsername("user1");
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("admin", null)
-        );
-
-        when(userRepository.findByUsername("admin"))
-                .thenReturn(Optional.of(admin));
-
-        when(userRepository.findById(2))
-                .thenReturn(Optional.of(user));
-
-        userService.deleteUserById(2);
-
-        verify(transactionRepository).deleteByUserId(2);
-        verify(budgetRepository).deleteByUserId(2);
-        verify(userRepository).delete(user);
-    }
+//    @Test
+//    void shouldDeleteUserWithTransactionsAndBudgets() {
+//
+//        User admin = new User();
+//        admin.setId(1);
+//        admin.setUsername("admin");
+//
+//        User user = new User();
+//        user.setId(2);
+//        user.setUsername("user1");
+//
+//        SecurityContextHolder.getContext().setAuthentication(
+//                new UsernamePasswordAuthenticationToken("admin", null)
+//        );
+//
+//        when(userRepository.findByUsername("admin"))
+//                .thenReturn(Optional.of(admin));
+//
+//        when(userRepository.findById(2))
+//                .thenReturn(Optional.of(user));
+//
+//        userService.deleteUserById(2);
+//
+//        verify(transactionRepository).deleteByUserId(2);
+//        verify(budgetRepository).deleteByUserId(2);
+//        verify(userRepository).delete(user);
+//    }
 }

@@ -68,7 +68,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 );
 
 
-        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(
                 userId,
                 startDate,
                 endDate
@@ -102,7 +102,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         int userId = user.getId();
 
         List<Budget> budgets =
-                budgetRepository.findByUserIdAndMonthAndYear(
+                budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
                         userId,
                         month,
                         year
@@ -118,7 +118,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                         month.length(year.isLeap())
                 );
 
-        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetween(
+        List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(
                 userId,
                 startDate,
                 endDate

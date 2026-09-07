@@ -17,13 +17,13 @@ import java.util.Optional;
 public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
 
 
-    List<Transaction> findByUserId(int userId);
+    List<Transaction> findByUserIdAndActiveTrue(int userId);
 
-    Optional<Transaction> findByIdAndUserId(int id, int userId);
+    Optional<Transaction> findByIdAndUserIdAndActiveTrue(int id, int userId);
 
 
 
-    List<Transaction> findByUserIdAndTransactionDateBetween(
+    List<Transaction> findByUserIdAndTransactionDateBetweenAndActiveTrue(
             int userId,
             LocalDate startDate,
             LocalDate endDate
