@@ -132,13 +132,7 @@ public class TransactionServiceTest {
         user.setId(1);
         user.setUsername("tej");
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("tej",null)
-        );
-
-        when(userRepository.findByUsername("tej"))
-                .thenReturn(Optional.of(user));
-
+        when(currentUserService.getCurrentUser()).thenReturn(user);
 
         int transactionId =4;
 

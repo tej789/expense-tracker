@@ -1,14 +1,14 @@
 /*
 
 Today:
-=> Added Required Changes After Review
+=> Added Soft Delete for user and budget , added 2 exception handler
 Tomorrow:
-=> Add Soft Delete for user,budget and Transaction
+=> Add Soft Delete for Transaction
 Impediments:
 => NONE
 GitHub:
 => https://github.com/tej789/expense-tracker.git
 
  */
-
+//
 

@@ -7,6 +7,7 @@ import com.expensetracker.api.DTO.MessageResponse;
 import com.expensetracker.api.DTO.TotalBudgetResponse;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.service.BudgetService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class BudgetController {
 
     @PostMapping("/budget")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<BudgetResponse> setBudget(@RequestBody BudgetRequest request){
+    public ResponseEntity<BudgetResponse> setBudget(@Valid @RequestBody BudgetRequest request){
         BudgetResponse b = budgetService.setBudget(request);
         return new ResponseEntity<>(b, HttpStatus.OK);
     }
@@ -67,7 +68,7 @@ public class BudgetController {
 
     @PutMapping("/budget")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<BudgetResponse> updateBudget(@RequestBody BudgetRequest request){
+    public ResponseEntity<BudgetResponse> updateBudget(@Valid @RequestBody BudgetRequest request){
 
         BudgetResponse b = budgetService.updateBudget(request);
         return new ResponseEntity<>(b,HttpStatus.OK);
