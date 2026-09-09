@@ -1,9 +1,9 @@
 /*
 
 Today:
-=> Added Soft Delete for user and budget , added 2 exception handler
+=> Added Soft Delete for Transaction , Started Email Verification
 Tomorrow:
-=> Add Soft Delete for Transaction
+=> Email Verification
 Impediments:
 => NONE
 GitHub:
