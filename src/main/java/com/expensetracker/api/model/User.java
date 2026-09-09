@@ -43,5 +43,14 @@ public class User {
 
     @Column(nullable = false)
     private boolean active = true;
+
+
+
+
+    // for email verification
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+    private String verificationCode;
+    private LocalDateTime verificationCodeExpiry;
 }
 
