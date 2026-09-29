@@ -1,6 +1,7 @@
 package com.expensetracker.api.service.impl;
 
 import com.expensetracker.api.DTO.MonthlySummaryResponse;
+import com.expensetracker.api.ExpenseTrackerApplication;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.Transaction;
@@ -9,6 +10,8 @@ import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.MonthlySummaryService;
+import com.expensetracker.api.service.Strategy.CategoryExpenseStrategy;
+import com.expensetracker.api.service.Strategy.ExpenseCalculationStrategy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,15 +26,18 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
     private final CurrentUserService currentUserService;
+    private final ExpenseCalculationStrategy expenseCalculationStrategy;
 
     public MonthlySummaryServiceImpl(
             BudgetRepository budgetRepository,
             TransactionRepository transactionRepository,
-            CurrentUserService currentUserService) {
+            CurrentUserService currentUserService,
+            ExpenseCalculationStrategy expenseCalculationStrategy) {
 
         this.budgetRepository = budgetRepository;
         this.transactionRepository = transactionRepository;
         this.currentUserService =currentUserService;
+        this.expenseCalculationStrategy = expenseCalculationStrategy;
     }
 
     @Override
@@ -82,6 +88,11 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 spent = spent + transaction.getAmount();
             }
         }
+//        double spent =
+//                expenseCalculationStrategy.calculate(
+//                        transactions,
+//                        category
+//                );
 
         MonthlySummaryResponse res =  new MonthlySummaryResponse(
                 category,
@@ -139,6 +150,8 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 }
             }
 
+//            double spent = expenseCalculationStrategy.calculate(transactions, category);
+
             for (Transaction transaction : transactions) {
 
                 if (transaction.getCategory() == category) {
@@ -146,17 +159,14 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 }
             }
 
-            if (budgetAmount > 0 || spent > 0) {
+            MonthlySummaryResponse response =
+                    new MonthlySummaryResponse(
+                            category,
+                            budgetAmount,
+                            spent
+                    );
 
-                MonthlySummaryResponse response =
-                        new MonthlySummaryResponse(
-                                category,
-                                budgetAmount,
-                                spent
-                        );
-
-                summary.add(response);
-            }
+            summary.add(response);
         }
 
         return summary;
@@ -164,3 +174,9 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
 
 
 }
+
+
+/*
+currently we not use Strategy here now suggest other place where Design pattern is needed
+and that should actual need of design pattern
+ */

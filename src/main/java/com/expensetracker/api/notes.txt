@@ -13,5 +13,5 @@ GitHub:
 //
 
 
-but how user redirect to registreation to very email ,
+but how user redirect to registration to very email ,
 
