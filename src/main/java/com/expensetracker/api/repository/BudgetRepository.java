@@ -36,3 +36,5 @@ public interface BudgetRepository extends JpaRepository<Budget,Integer> {
 
     List<Budget> findByUserIdAndActiveTrue(int userId);
 }
+
+

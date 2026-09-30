@@ -80,25 +80,40 @@ public class AuthServiceImpl implements AuthService {
         Random OTP = new Random();
         String verificationCode = String.format("%06d", OTP.nextInt(1000000));
 
+//
+//        User user = new User();
+//
+//        user.setUsername(request.getUsername());
+//        user.setFirstname(request.getFirstname());
+//        user.setLastname(request.getLastname());
+//        user.setMail(request.getMail());
+//        user.setPhone(request.getPhone());
+//        user.setPassword(
+//                passwordEncoder.encode(request.getPassword())
+//        );
+//        user.setRole(Role.USER);
+//
+//        // set OTP
+//        user.setEmailVerified(false);
+//        user.setVerificationCode(verificationCode);
+//        user.setVerificationCodeExpiry(
+//                LocalDateTime.now().plusMinutes(10)
+//        );
 
-        User user = new User();
 
-        user.setUsername(request.getUsername());
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setMail(request.getMail());
-        user.setPhone(request.getPhone());
-        user.setPassword(
-                passwordEncoder.encode(request.getPassword())
-        );
-        user.setRole(Role.USER);
+        User user = User.builder()
+                .username(request.getUsername())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .mail(request.getMail())
+                .phone(request.getPhone())
+                .password(request.getPassword())
+                .role(Role.USER)
+                .emailVerified(false)
+                .verificationCode(verificationCode)
+                .verificationCodeExpiry(LocalDateTime.now().plusMinutes(10))
+                .build();
 
-        // set OTP
-        user.setEmailVerified(false);
-        user.setVerificationCode(verificationCode);
-        user.setVerificationCodeExpiry(
-                LocalDateTime.now().plusMinutes(10)
-        );
 
         userRepository.save(user);
 
@@ -137,3 +152,4 @@ public class AuthServiceImpl implements AuthService {
     }
 
 }
+
