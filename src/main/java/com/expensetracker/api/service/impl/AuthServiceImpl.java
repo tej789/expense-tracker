@@ -9,6 +9,7 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.AuthService;
 import com.expensetracker.api.service.EmailService;
+import com.expensetracker.api.service.OtpNotificationSubject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+//    private final EmailService emailService;
+    private OtpNotificationSubject otpNotificationSubject;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,EmailService emailService) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,OtpNotificationSubject otpNotificationSubject) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
+        this.otpNotificationSubject = otpNotificationSubject;
     }
 
 
@@ -117,10 +119,11 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        // send OTP throught mail
-        emailService.sendEmail(user.getMail(),
-                "Expense Tracker Email Verification",
-                "Your Verification Code is: "+verificationCode);
+        // send OTP through mail
+        otpNotificationSubject.notifyObservers(
+     user,verificationCode
+        );
+
 
 
         return new RegisterResponse(

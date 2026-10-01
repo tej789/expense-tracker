@@ -1,62 +1,62 @@
-package com.expensetracker.api.service;
-
-import com.expensetracker.api.model.User;
-import com.expensetracker.api.repository.BudgetRepository;
-import com.expensetracker.api.repository.TransactionRepository;
-import com.expensetracker.api.repository.UserRepository;
-import com.expensetracker.api.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
-    @Mock
-    UserRepository userRepository;
-
-    @Mock
-    TransactionRepository transactionRepository;
-
-    @Mock
-    BudgetRepository budgetRepository;
-
-    @InjectMocks
-    UserServiceImpl userService;
-
-//    @Test
-//    void shouldDeleteUserWithTransactionsAndBudgets() {
+//package com.expensetracker.api.service;
 //
-//        User admin = new User();
-//        admin.setId(1);
-//        admin.setUsername("admin");
+//import com.expensetracker.api.model.User;
+//import com.expensetracker.api.repository.BudgetRepository;
+//import com.expensetracker.api.repository.TransactionRepository;
+//import com.expensetracker.api.repository.UserRepository;
+//import com.expensetracker.api.service.impl.UserServiceImpl;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.jupiter.MockitoExtension;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.context.SecurityContextHolder;
 //
-//        User user = new User();
-//        user.setId(2);
-//        user.setUsername("user1");
+//import java.util.Optional;
 //
-//        SecurityContextHolder.getContext().setAuthentication(
-//                new UsernamePasswordAuthenticationToken("admin", null)
-//        );
+//import static org.mockito.Mockito.verify;
+//import static org.mockito.Mockito.when;
 //
-//        when(userRepository.findByUsername("admin"))
-//                .thenReturn(Optional.of(admin));
+//@ExtendWith(MockitoExtension.class)
+//public class UserServiceTest {
+//    @Mock
+//    UserRepository userRepository;
 //
-//        when(userRepository.findById(2))
-//                .thenReturn(Optional.of(user));
+//    @Mock
+//    TransactionRepository transactionRepository;
 //
-//        userService.deleteUserById(2);
+//    @Mock
+//    BudgetRepository budgetRepository;
 //
-//        verify(transactionRepository).deleteByUserId(2);
-//        verify(budgetRepository).deleteByUserId(2);
-//        verify(userRepository).delete(user);
-//    }
-}
+//    @InjectMocks
+//    UserServiceImpl userService;
+//
+////    @Test
+////    void shouldDeleteUserWithTransactionsAndBudgets() {
+////
+////        User admin = new User();
+////        admin.setId(1);
+////        admin.setUsername("admin");
+////
+////        User user = new User();
+////        user.setId(2);
+////        user.setUsername("user1");
+////
+////        SecurityContextHolder.getContext().setAuthentication(
+////                new UsernamePasswordAuthenticationToken("admin", null)
+////        );
+////
+////        when(userRepository.findByUsername("admin"))
+////                .thenReturn(Optional.of(admin));
+////
+////        when(userRepository.findById(2))
+////                .thenReturn(Optional.of(user));
+////
+////        userService.deleteUserById(2);
+////
+////        verify(transactionRepository).deleteByUserId(2);
+////        verify(budgetRepository).deleteByUserId(2);
+////        verify(userRepository).delete(user);
+////    }
+//}
