@@ -174,9 +174,3 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
 
 
 }
-
-
-/*
-currently we not use Strategy here now suggest other place where Design pattern is needed
-and that should actual need of design pattern
- */
