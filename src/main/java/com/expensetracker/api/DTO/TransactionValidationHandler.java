@@ -6,5 +6,5 @@ public interface TransactionValidationHandler {
 
     void setNext(TransactionValidationHandler next);
 
-    void validate(Transaction transaction);
+    void validate(TransactionRequest request);
 }

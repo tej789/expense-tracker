@@ -1,9 +1,6 @@
 package com.expensetracker.api.service;
 
-import com.expensetracker.api.DTO.LoginRequest;
-import com.expensetracker.api.DTO.RegisterRequest;
-import com.expensetracker.api.DTO.RegisterResponse;
-import com.expensetracker.api.DTO.VerifyEmailRequest;
+import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.User;
 
 public interface AuthService {
@@ -13,4 +10,5 @@ public interface AuthService {
      User login(LoginRequest request);
 
      void verifyEmail(VerifyEmailRequest request);
+
 }

@@ -8,18 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsOtpObserver implements OtpObserver {
 
-
     private final SmsService smsService;
-
 
     public SmsOtpObserver(SmsService smsService){
         this.smsService = smsService;
     }
+
     @Override
     public void sendOtp(User user, String otp) {
 
-        smsService.sendSms(
-                user.getPhone(),
+        smsService.sendSms(user.getPhone(),
                 "Your Otp Verification Code is : "+otp
         );
 

@@ -1,9 +1,6 @@
 package com.expensetracker.api.service.impl;
 
-import com.expensetracker.api.DTO.LoginRequest;
-import com.expensetracker.api.DTO.RegisterRequest;
-import com.expensetracker.api.DTO.RegisterResponse;
-import com.expensetracker.api.DTO.VerifyEmailRequest;
+import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.Role;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
@@ -154,5 +151,6 @@ public class AuthServiceImpl implements AuthService {
         return user;
     }
 
-}
 
+
+}

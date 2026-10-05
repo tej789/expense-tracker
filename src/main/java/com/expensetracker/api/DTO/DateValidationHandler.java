@@ -15,14 +15,14 @@ public class DateValidationHandler implements TransactionValidationHandler{
     }
 
     @Override
-    public void validate(Transaction transaction) {
+    public void validate(TransactionRequest request) {
 
-        if (transaction.getTransactionDate().isAfter(LocalDate.now())) {
+        if (request.getTransactionDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Transaction date cannot be in the future");
         }
 
         if(next!=null){
-            next.validate(transaction);
+            next.validate(request);
         }
 
     }

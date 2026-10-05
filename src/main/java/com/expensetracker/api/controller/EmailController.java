@@ -4,6 +4,7 @@ import com.expensetracker.api.DTO.VerifyEmailRequest;
 import com.expensetracker.api.Exception.Response;
 import com.expensetracker.api.service.AuthService;
 import com.expensetracker.api.service.EmailService;
+import com.expensetracker.api.service.impl.JavaMailSenderAdapter;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +14,18 @@ public class EmailController {
 
     private final EmailService emailService;
     private final AuthService authService;
+    private final JavaMailSenderAdapter javaMailSenderAdapter;
 
-    public EmailController(EmailService emailService,AuthService authService) {
+    public EmailController(EmailService emailService,AuthService authService,JavaMailSenderAdapter javaMailSenderAdapter) {
         this.emailService = emailService;
         this.authService = authService;
+        this.javaMailSenderAdapter = javaMailSenderAdapter;
     }
 
     @GetMapping("/test-email")
     public String testEmail(@RequestParam String email) {
 
-        emailService.sendEmail(
+        javaMailSenderAdapter.sendEmail(
                 email,
                 "Expense Tracker",
                 "This is a email from Expense Tracker."

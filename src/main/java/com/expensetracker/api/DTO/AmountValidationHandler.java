@@ -15,15 +15,16 @@ this.next = next;
     }
 
     @Override
-    public void validate(Transaction transaction) {
-        if(transaction.getAmount()<=0){
+    public void validate(TransactionRequest request) {
+        if(request.getAmount()<=0){
             throw new IllegalArgumentException(
                     "Transaction Amount Must Be Greater Then One"
             );
         }
 
+
         if(next!=null){
-            next.validate(transaction);
+            next.validate(request);
         }
 
     }

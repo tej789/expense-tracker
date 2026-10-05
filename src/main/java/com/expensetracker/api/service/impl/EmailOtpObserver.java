@@ -9,14 +9,16 @@ import org.springframework.stereotype.Component;
 public class EmailOtpObserver implements OtpObserver {
 
     private final EmailService emailService;
+    private final JavaMailSenderAdapter javaMailSenderAdapter;
 
-    public EmailOtpObserver(EmailService emailService){
+    public EmailOtpObserver(EmailService emailService,JavaMailSenderAdapter javaMailSenderAdapter){
         this.emailService = emailService;
+        this.javaMailSenderAdapter = javaMailSenderAdapter;
     }
     @Override
     public void sendOtp(User user, String otp) {
 
-        emailService.sendEmail(
+        javaMailSenderAdapter.sendEmail(
                 user.getMail(),
                 "Expense Tracker Email Verification",
                 "Your Verification Code is: " + otp
