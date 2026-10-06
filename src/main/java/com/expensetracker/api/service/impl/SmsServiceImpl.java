@@ -9,15 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SmsServiceImpl implements SmsService {
 
-//    @Value("${twilio.account.sid}")
-//    private String accountSid;
-//
-//    @Value("${twilio.auth.token}")
-//    private String authToken;
-//
-//    @Value("$twilio.phone.number")
-//    private String twilioPhoneNumber;
-
 
 private final String accountSid = System.getenv("SID");
     private final String authToken = System.getenv("AUTH_TOKEN");

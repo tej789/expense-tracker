@@ -53,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 
+        user.setActive(true);
         user.setEmailVerified(true);
         user.setVerificationCode(null);
         user.setVerificationCodeExpiry(null);
@@ -106,8 +107,9 @@ public class AuthServiceImpl implements AuthService {
                 .lastname(request.getLastname())
                 .mail(request.getMail())
                 .phone(request.getPhone())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
+                .active(false)
                 .emailVerified(false)
                 .verificationCode(verificationCode)
                 .verificationCodeExpiry(LocalDateTime.now().plusMinutes(10))
