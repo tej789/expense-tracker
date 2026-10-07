@@ -66,12 +66,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         LocalDate startDate =
                 LocalDate.of(year.getValue(), month, 1);
 
-        LocalDate endDate =
-                LocalDate.of(
-                        year.getValue(),
-                        month,
-                        month.length(year.isLeap())
-                );
+        LocalDate endDate = LocalDate.of(year.getValue(), month, month.length(year.isLeap()));
 
 
         List<Transaction> transactions = transactionRepository.findByUserIdAndTransactionDateBetweenAndActiveTrue(
@@ -80,25 +75,17 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 endDate
         );
 
-        double spent= 0;
+//        double spent= 0;
+//
+//        for(Transaction transaction : transactions)
+//        {
+//            if(transaction.getCategory() == category ){
+//                spent = spent + transaction.getAmount();
+//            }
+//        }
+        double spent = expenseCalculationStrategy.calculate(transactions, category);
 
-        for(Transaction transaction : transactions)
-        {
-            if(transaction.getCategory() == category ){
-                spent = spent + transaction.getAmount();
-            }
-        }
-//        double spent =
-//                expenseCalculationStrategy.calculate(
-//                        transactions,
-//                        category
-//                );
-
-        MonthlySummaryResponse res =  new MonthlySummaryResponse(
-                category,
-                budgetAmount,
-                spent
-        );
+        MonthlySummaryResponse res =  new MonthlySummaryResponse(category, budgetAmount, spent);
 
         return res;
     }
@@ -119,8 +106,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                         year
                 );
 
-        LocalDate startDate =
-                LocalDate.of(year.getValue(), month, 1);
+        LocalDate startDate = LocalDate.of(year.getValue(), month, 1);
 
         LocalDate endDate =
                 LocalDate.of(
@@ -140,7 +126,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         for (CategoryType category : CategoryType.values()) {
 
             double budgetAmount = 0;
-            double spent = 0;
+//            double spent = 0;
 
             for (Budget budget : budgets) {
 
@@ -150,17 +136,16 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 }
             }
 
-//            double spent = expenseCalculationStrategy.calculate(transactions, category);
+            double spent = expenseCalculationStrategy.calculate(transactions, category);
 
-            for (Transaction transaction : transactions) {
+//            for (Transaction transaction : transactions) {
+//
+//                if (transaction.getCategory() == category) {
+//                    spent = spent + transaction.getAmount();
+//                }
+//            }
 
-                if (transaction.getCategory() == category) {
-                    spent = spent + transaction.getAmount();
-                }
-            }
-
-            MonthlySummaryResponse response =
-                    new MonthlySummaryResponse(
+            MonthlySummaryResponse response = new MonthlySummaryResponse(
                             category,
                             budgetAmount,
                             spent

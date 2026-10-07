@@ -10,6 +10,9 @@ import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.UserService;
 import com.expensetracker.api.model.Transaction;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,6 +56,26 @@ public class UserServiceImpl implements UserService {
             u.add(res);
         }
         return u;
+    }
+
+    @Override
+    public Page<UserResponse> getAllUser(int page, int size){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        Page<User>  userPage = userRepository.findByActiveTrue(pageable);
+
+        return userPage.map(user ->{
+            UserResponse res = new UserResponse();
+            res.setId(user.getId());
+            res.setUsername(user.getUsername());
+            res.setFirstname(user.getFirstname());
+            res.setLastname(user.getLastname());
+            res.setMail(user.getMail());
+            res.setPhone(user.getPhone());
+            res.setRole(user.getRole());
+            return res;
+        });
     }
 
     @Override

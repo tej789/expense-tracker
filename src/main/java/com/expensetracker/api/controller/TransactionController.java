@@ -8,6 +8,7 @@ import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,12 +41,26 @@ public ResponseEntity<TransactionResponse> add(@Valid @RequestBody TransactionRe
 }
 
 
-@GetMapping("/transaction")
-@PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<TransactionResponse>> getTransaction(){
-        List<TransactionResponse> list = transactionService.getTransaction();
+//@GetMapping("/transaction")
+//@PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<List<TransactionResponse>> getTransaction(){
+//        List<TransactionResponse> list = transactionService.getTransaction();
+//        return new ResponseEntity<>(list,HttpStatus.OK);
+//    }
+
+
+
+    @GetMapping("/transaction")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Page<TransactionResponse>> getTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ){
+        Page<TransactionResponse> list = transactionService.getTransactions(page,size);
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
+
+
 
     @GetMapping("/transaction/month")
     @PreAuthorize("hasRole('USER')")

@@ -4,9 +4,11 @@ import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
-import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.TransactionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -70,29 +72,46 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionResponse> getTransaction(){
-
         User user = currentUserService.getCurrentUser();
-
         int id = user.getId();
         List<Transaction> transactions = transactionRepository.findByUserIdAndActiveTrue(id);
         List<TransactionResponse> responses = new ArrayList<>();
-
         for (Transaction transaction : transactions) {
-
             TransactionResponse response = new TransactionResponse();
-
             response.setId(transaction.getId());
             response.setAmount(transaction.getAmount());
             response.setDescription(transaction.getDescription());
             response.setTransactionDate(transaction.getTransactionDate());
             response.setType(transaction.getType());
             response.setCategory(transaction.getCategory());
-
             responses.add(response);
         }
-
         return responses;
     }
+
+    @Override
+    public Page<TransactionResponse> getTransactions(int page, int size){
+            User user =   currentUserService.getCurrentUser();
+            int id = user.getId();
+
+            Pageable pageable = PageRequest.of(page,size);
+            Page<Transaction> transactionPage = transactionRepository.findByUserIdAndActiveTrue(id,pageable);
+
+            return transactionPage.map(transaction -> {
+                TransactionResponse response = new TransactionResponse();
+
+                response.setId(transaction.getId());
+                response.setAmount(transaction.getAmount());
+                response.setDescription(transaction.getDescription());
+                response.setTransactionDate(transaction.getTransactionDate());
+                response.setCategory(transaction.getCategory());
+                response.setType(transaction.getType());
+
+return response;
+            });
+        }
+
+
 
     @Override
     public List<TransactionResponse> getTransactionByMonth(Year year, Month month) {

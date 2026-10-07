@@ -4,6 +4,7 @@ import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.service.JwtService;
 import com.expensetracker.api.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,11 +25,22 @@ public class UserController {
     }
 
 
-  @GetMapping("/users")
-  @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<UserResponse>> getAllUsers(){
-        List<UserResponse> users = userService.getAllUsers();
-        return new ResponseEntity<>(users,HttpStatus.OK);
+//  @GetMapping("/users")
+//  @PreAuthorize("hasRole('ADMIN')")
+//  public ResponseEntity<List<UserResponse>> getAllUsers(){
+//        List<UserResponse> users = userService.getAllUsers();
+//        return new ResponseEntity<>(users,HttpStatus.OK);
+//  }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<Page<UserResponse>> getAllUser(
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue =  "1")    int size
+  ){
+Page<UserResponse> usersPage = userService.getAllUser(page, size);
+return new ResponseEntity<>(usersPage, HttpStatus.OK);
+
   }
 
     @GetMapping("/user/{id}")

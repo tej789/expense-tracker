@@ -1,14 +1,20 @@
 package com.expensetracker.api.service;
 
 import com.expensetracker.api.DTO.UserResponse;
+import org.springframework.data.domain.Page;
+
 import java.util.*;
 
 public interface UserService {
 
      List<UserResponse> getAllUsers();
 
+     Page<UserResponse> getAllUser(int page, int size);
+
      UserResponse getUserById(int id);
 
      void deleteUserById(int userId);
+
+
 }
 

@@ -8,9 +8,7 @@ import java.util.List;
 public class CategoryExpenseStrategy implements ExpenseCalculationStrategy {
 
     @Override
-    public double calculate(
-            List<Transaction> transactions,
-            CategoryType category) {
+    public double calculate(List<Transaction> transactions, CategoryType category) {
 
         double spent = 0;
 

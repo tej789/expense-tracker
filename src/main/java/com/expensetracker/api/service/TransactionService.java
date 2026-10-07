@@ -3,6 +3,8 @@ package com.expensetracker.api.service;
 import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
+import org.springframework.data.domain.Page;
+
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
@@ -13,7 +15,9 @@ public interface TransactionService {
 
   List<TransactionResponse>  getTransaction();
 
-     List<TransactionResponse> getTransactionByMonth(Year year, Month month);
+    Page<TransactionResponse> getTransactions(int page, int size);
+
+    List<TransactionResponse> getTransactionByMonth(Year year, Month month);
 
      TransactionResponse updateTransaction(int transactionId , TransactionRequest request);
 
