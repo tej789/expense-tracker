@@ -9,9 +9,22 @@ Impediments:
 GitHub:
 => https://github.com/tej789/expense-tracker.git
 
+
+Today:
+=> Implemented Strategy Design Pattern In Monthly Summary And In Monthly Category summary
+Tomorrow:
+=> Add Pagination In Transaction Section
+Impediments:
+=> None
+
+
+
+
+
+
  */
 //
 
 
-but how user redirect to registration to very email ,
+
 

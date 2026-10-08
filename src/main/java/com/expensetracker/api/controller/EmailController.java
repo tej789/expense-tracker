@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class EmailController {
 
-    private final EmailService emailService;
     private final AuthService authService;
     private final JavaMailSenderAdapter javaMailSenderAdapter;
 
-    public EmailController(EmailService emailService,AuthService authService,JavaMailSenderAdapter javaMailSenderAdapter) {
-        this.emailService = emailService;
+    public EmailController(AuthService authService,JavaMailSenderAdapter javaMailSenderAdapter) {
         this.authService = authService;
         this.javaMailSenderAdapter = javaMailSenderAdapter;
     }

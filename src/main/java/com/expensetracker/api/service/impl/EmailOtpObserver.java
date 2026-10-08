@@ -15,6 +15,8 @@ public class EmailOtpObserver implements OtpObserver {
         this.emailService = emailService;
         this.javaMailSenderAdapter = javaMailSenderAdapter;
     }
+
+
     @Override
     public void sendOtp(User user, String otp) {
 

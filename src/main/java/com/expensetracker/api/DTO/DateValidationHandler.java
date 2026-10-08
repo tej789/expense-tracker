@@ -1,6 +1,4 @@
 package com.expensetracker.api.DTO;
-
-import com.expensetracker.api.model.Transaction;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
