@@ -1,6 +1,8 @@
 package com.expensetracker.api.security;
 
 import com.expensetracker.api.service.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,95 +27,58 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             String token = authHeader.substring(7);
 
-            String username = jwtService.extractUsername(token);
-            String role = jwtService.extractRole(token);
+            try {
 
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_"+role));
+                String username = jwtService.extractUsername(token);
+                String role = jwtService.extractRole(token);
 
+                List<GrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                username,
+                                null,
+                                authorities
+                        );
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            username,
-                            null,
-                            authorities
-                    );
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
 
-            System.out.println("Authenticated user: " + username + ", Role: " + role +"Authority :"+ authorities);
+            } catch (ExpiredJwtException e) {
 
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write(
+                        "{\"message\":\"JWT token has expired\"}"
+                );
+                return;
+
+            } catch (JwtException e) {
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write(
+                        "{\"message\":\"Invalid JWT token\"}"
+                );
+                return;
+            }
         }
-
 
         filterChain.doFilter(request, response);
-
     }
 }
 
-/*
-@Override
-protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain)
-        throws ServletException, IOException {
-
-    String authHeader = request.getHeader("Authorization");
-
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
-        String token = authHeader.substring(7);
-
-        try {
-
-            String username = jwtService.extractUsername(token);
-            String role = jwtService.extractRole(token);
-
-            List<GrantedAuthority> authorities =
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            username,
-                            null,
-                            authorities
-                    );
-
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
-
-        } catch (ExpiredJwtException e) {
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write(
-                    "{\"message\":\"JWT token has expired\"}"
-            );
-            return;
-
-        } catch (JwtException e) {
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write(
-                    "{\"message\":\"Invalid JWT token\"}"
-            );
-            return;
-        }
-    }
-
-    filterChain.doFilter(request, response);
-}
- */
