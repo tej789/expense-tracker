@@ -10,6 +10,7 @@ import com.expensetracker.api.service.OtpNotificationSubject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -151,6 +152,31 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Invalid password");
         }
         return user;
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordRequest request) {
+
+        User user = userRepository.findByMail(request.getMail())
+                .orElseThrow(() -> new NoSuchElementException("User Not Found"));
+
+        SecureRandom OTP = new SecureRandom();
+
+        String resetPasswordCode =
+                String.format("%06d", OTP.nextInt(1000000));
+
+//        user.setResetPasswordCode(resetPasswordCode);
+//
+//        user.setResetPasswordCodeExpiry(
+//                LocalDateTime.now().plusMinutes(10)
+//        );
+
+        userRepository.save(user);
+
+        otpNotificationSubject.notifyObservers(
+                user,
+                resetPasswordCode
+        );
     }
 
 

@@ -3,7 +3,6 @@ package com.expensetracker.api.controller;
 import com.expensetracker.api.DTO.VerifyEmailRequest;
 import com.expensetracker.api.Exception.Response;
 import com.expensetracker.api.service.AuthService;
-import com.expensetracker.api.service.EmailService;
 import com.expensetracker.api.service.impl.JavaMailSenderAdapter;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

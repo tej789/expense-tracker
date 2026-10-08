@@ -11,4 +11,6 @@ public interface AuthService {
 
      void verifyEmail(VerifyEmailRequest request);
 
+     void forgotPassword(ForgotPasswordRequest request);
+
 }

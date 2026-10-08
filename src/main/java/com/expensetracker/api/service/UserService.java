@@ -1,5 +1,6 @@
 package com.expensetracker.api.service;
 
+import com.expensetracker.api.DTO.UpdateProfileRequest;
 import com.expensetracker.api.DTO.UserResponse;
 import org.springframework.data.domain.Page;
 
@@ -14,7 +15,7 @@ public interface UserService {
      UserResponse getUserById(int id);
 
      void deleteUserById(int userId);
-
+     void updateProfile(UpdateProfileRequest request);
 
 }
 

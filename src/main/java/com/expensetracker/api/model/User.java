@@ -53,6 +53,12 @@ public class User {
     private boolean emailVerified = false;
     private String verificationCode;
     private LocalDateTime verificationCodeExpiry;
+
+
+    // for Forget Password
+//    private String resetPasswordCode;
+//
+//    private LocalDateTime resetPasswordCodeExpiry;
 }
 
 

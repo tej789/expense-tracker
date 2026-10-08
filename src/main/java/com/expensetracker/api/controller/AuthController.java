@@ -8,7 +8,6 @@ import com.expensetracker.api.model.User;
 import com.expensetracker.api.service.AuthService;
 import com.expensetracker.api.service.JwtService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

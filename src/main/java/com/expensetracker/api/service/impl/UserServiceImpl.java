@@ -1,5 +1,6 @@
 package com.expensetracker.api.service.impl;
 
+import com.expensetracker.api.DTO.UpdateProfileRequest;
 import com.expensetracker.api.DTO.UserResponse;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.User;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -130,6 +132,25 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         transactionRepository.saveAll(transactions);
         budgetRepository.saveAll(budgets);
+    }
+
+
+    @Override
+    public void updateProfile(UpdateProfileRequest request) {
+
+        User user = currentUserService.getCurrentUser();
+
+        Optional<User> existingUser = userRepository.findByPhone(request.getPhone());
+
+        if (existingUser.isPresent() && existingUser.get().getId() != user.getId()) {
+            throw new IllegalArgumentException("Phone number already belongs to another user");
+        }
+
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setPhone(request.getPhone());
+
+        userRepository.save(user);
     }
 
 }

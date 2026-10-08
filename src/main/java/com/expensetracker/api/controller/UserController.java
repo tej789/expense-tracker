@@ -1,16 +1,13 @@
 package com.expensetracker.api.controller;
 
 import com.expensetracker.api.DTO.*;
-import com.expensetracker.api.model.User;
-import com.expensetracker.api.service.JwtService;
 import com.expensetracker.api.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class UserController {
@@ -61,6 +58,18 @@ return new ResponseEntity<>(usersPage, HttpStatus.OK);
 
         return ResponseEntity.ok(
                 new MessageResponse("User deleted successfully")
+        );
+    }
+
+    @PutMapping("/user/profile")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ApiResponse> updateProfile(
+            @Valid @RequestBody UpdateProfileRequest request) {
+
+        userService.updateProfile(request);
+
+        return ResponseEntity.ok(
+                new ApiResponse("Profile updated successfully")
         );
     }
 }
