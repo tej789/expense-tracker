@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -35,29 +34,6 @@ public class UserServiceImpl implements UserService {
         this.budgetRepository =budgetRepository;
         this.transactionRepository =transactionRepository;
         this.currentUserService = currentUserService;
-    }
-
-    @Override
-    public List<UserResponse> getAllUsers() {
-        List<User> users = userRepository.findByActiveTrue();
-
-        List<UserResponse> u =new ArrayList<>();
-
-        for(User user : users){
-
-            UserResponse res =new UserResponse();
-
-            res.setId(user.getId());
-            res.setUsername(user.getUsername());
-            res.setFirstname(user.getFirstname());
-            res.setLastname(user.getLastname());
-            res.setMail(user.getMail());
-            res.setPhone(user.getPhone());
-            res.setRole(user.getRole());
-
-            u.add(res);
-        }
-        return u;
     }
 
     @Override
@@ -110,13 +86,12 @@ public class UserServiceImpl implements UserService {
                 "Admin cannot delete their own account");
         }
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new NoSuchElementException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         user.setActive(false);
 
         List<Transaction> transactions =
-                transactionRepository.findByUserIdAndActiveTrue(userId);
+                          transactionRepository.findByUserIdAndActiveTrue(userId);
 
         for (Transaction transaction : transactions) {
             transaction.setActive(false);

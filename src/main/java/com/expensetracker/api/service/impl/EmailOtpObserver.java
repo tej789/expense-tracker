@@ -1,18 +1,15 @@
 package com.expensetracker.api.service.impl;
 
 import com.expensetracker.api.model.User;
-import com.expensetracker.api.service.EmailService;
 import com.expensetracker.api.service.OtpObserver;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailOtpObserver implements OtpObserver {
 
-    private final EmailService emailService;
     private final JavaMailSenderAdapter javaMailSenderAdapter;
 
-    public EmailOtpObserver(EmailService emailService,JavaMailSenderAdapter javaMailSenderAdapter){
-        this.emailService = emailService;
+    public EmailOtpObserver(JavaMailSenderAdapter javaMailSenderAdapter){
         this.javaMailSenderAdapter = javaMailSenderAdapter;
     }
 

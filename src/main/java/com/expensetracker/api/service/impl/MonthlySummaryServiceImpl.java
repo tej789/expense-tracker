@@ -1,7 +1,6 @@
 package com.expensetracker.api.service.impl;
 
 import com.expensetracker.api.DTO.MonthlySummaryResponse;
-import com.expensetracker.api.ExpenseTrackerApplication;
 import com.expensetracker.api.model.Budget;
 import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.Transaction;
@@ -10,7 +9,6 @@ import com.expensetracker.api.repository.BudgetRepository;
 import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.MonthlySummaryService;
-import com.expensetracker.api.service.Strategy.CategoryExpenseStrategy;
 import com.expensetracker.api.service.Strategy.ExpenseCalculationStrategy;
 import org.springframework.stereotype.Service;
 
@@ -75,19 +73,9 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 endDate
         );
 
-//        double spent= 0;
-//
-//        for(Transaction transaction : transactions)
-//        {
-//            if(transaction.getCategory() == category ){
-//                spent = spent + transaction.getAmount();
-//            }
-//        }
         double spent = expenseCalculationStrategy.calculate(transactions, category);
 
-        MonthlySummaryResponse res =  new MonthlySummaryResponse(category, budgetAmount, spent);
-
-        return res;
+        return new MonthlySummaryResponse(category, budgetAmount, spent);
     }
 
     @Override
@@ -123,27 +111,21 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
 
         List<MonthlySummaryResponse> summary = new ArrayList<>();
 
+
+        // for each Category we Calculate summary
         for (CategoryType category : CategoryType.values()) {
 
             double budgetAmount = 0;
-//            double spent = 0;
 
             for (Budget budget : budgets) {
 
-                if (budget.getCategory() == category) {
+                     if (budget.getCategory() == category) {
                     budgetAmount = budget.getAmount();
                     break;
                 }
             }
+      double spent = expenseCalculationStrategy.calculate(transactions, category);
 
-            double spent = expenseCalculationStrategy.calculate(transactions, category);
-
-//            for (Transaction transaction : transactions) {
-//
-//                if (transaction.getCategory() == category) {
-//                    spent = spent + transaction.getAmount();
-//                }
-//            }
 
             MonthlySummaryResponse response = new MonthlySummaryResponse(
                             category,

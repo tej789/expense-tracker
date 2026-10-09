@@ -22,7 +22,7 @@ public class MonthlySummaryResponse {
         this.category = category;
         this.budget = budget;
         this.spent = spent;
-        this.remaining = budget - spent;
-        this.overBudget = spent > budget;
+        this.remaining = budget-spent;
+        this.overBudget = spent>budget;
     }
 }

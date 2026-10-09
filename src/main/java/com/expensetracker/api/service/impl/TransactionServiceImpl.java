@@ -24,13 +24,13 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CurrentUserService currentUserService;
     private final AmountValidationHandler amountValidationHandler;
-    private final DateValidationHandler dateValidationHandler;
+
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,CurrentUserService currentUserService,DateValidationHandler dateValidationHandler,AmountValidationHandler amountValidationHandler){
         this.transactionRepository = transactionRepository;
         this.currentUserService = currentUserService;
         this.amountValidationHandler = amountValidationHandler;
-        this.dateValidationHandler = dateValidationHandler;
+
 
         amountValidationHandler.setNext(dateValidationHandler);
     }
@@ -38,12 +38,6 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionResponse addTransaction(TransactionRequest request) {
 
-//        if (request.getAmount() < 1) {
-//            throw new IllegalArgumentException("Transaction amount must be greater than 0");
-//        }
-//        if (request.getTransactionDate().isAfter(LocalDate.now())) {
-//            throw new IllegalArgumentException("Transaction date cannot be in the future");
-//        }
         amountValidationHandler.validate(request);
 
         User user = currentUserService.getCurrentUser();
@@ -157,13 +151,6 @@ return response;
         if (transactions.isEmpty()) {
             throw new NoSuchElementException("Transaction not found or you are not authorized to update it.");
         }
-//
-//        if (request.getAmount() <= 0) {
-//            throw new IllegalArgumentException("Transaction amount must be greater than 0");
-//        }
-//        if (request.getTransactionDate().isAfter(LocalDate.now())) {
-//            throw new IllegalArgumentException("Transaction date cannot be in the future");
-//        }
 
         amountValidationHandler.validate(request);
 

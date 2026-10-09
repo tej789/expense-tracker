@@ -5,7 +5,6 @@ import com.expensetracker.api.model.Role;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.AuthService;
-import com.expensetracker.api.service.EmailService;
 import com.expensetracker.api.service.OtpNotificationSubject;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,8 +19,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-//    private final EmailService emailService;
-    private OtpNotificationSubject otpNotificationSubject;
+    private final OtpNotificationSubject otpNotificationSubject;
 
     public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,OtpNotificationSubject otpNotificationSubject) {
         this.userRepository = userRepository;
@@ -80,27 +78,6 @@ public class AuthServiceImpl implements AuthService {
         // generate OTP
         Random OTP = new Random();
         String verificationCode = String.format("%06d", OTP.nextInt(1000000));
-
-//
-//        User user = new User();
-//
-//        user.setUsername(request.getUsername());
-//        user.setFirstname(request.getFirstname());
-//        user.setLastname(request.getLastname());
-//        user.setMail(request.getMail());
-//        user.setPhone(request.getPhone());
-//        user.setPassword(
-//                passwordEncoder.encode(request.getPassword())
-//        );
-//        user.setRole(Role.USER);
-//
-//        // set OTP
-//        user.setEmailVerified(false);
-//        user.setVerificationCode(verificationCode);
-//        user.setVerificationCodeExpiry(
-//                LocalDateTime.now().plusMinutes(10)
-//        );
-
 
         User user = User.builder()
                 .username(request.getUsername())

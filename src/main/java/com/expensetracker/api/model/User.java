@@ -2,7 +2,6 @@ package com.expensetracker.api.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -59,6 +58,8 @@ public class User {
 //    private String resetPasswordCode;
 //
 //    private LocalDateTime resetPasswordCodeExpiry;
+
+
 }
 
 

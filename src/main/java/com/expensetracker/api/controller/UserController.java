@@ -21,14 +21,6 @@ public class UserController {
 
     }
 
-
-//  @GetMapping("/users")
-//  @PreAuthorize("hasRole('ADMIN')")
-//  public ResponseEntity<List<UserResponse>> getAllUsers(){
-//        List<UserResponse> users = userService.getAllUsers();
-//        return new ResponseEntity<>(users,HttpStatus.OK);
-//  }
-
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> getAllUser(
@@ -61,7 +53,7 @@ return new ResponseEntity<>(usersPage, HttpStatus.OK);
         );
     }
 
-    @PutMapping("/user/profile")
+    @PutMapping("/profile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse> updateProfile(
             @Valid @RequestBody UpdateProfileRequest request) {

@@ -16,7 +16,7 @@ this.next = next;
     public void validate(TransactionRequest request) {
         if(request.getAmount()<=0){
             throw new IllegalArgumentException(
-                    "Transaction Amount Must Be Greater Then One"
+                    "Transaction Amount Must Be Greater Then Zero"
             );
         }
 

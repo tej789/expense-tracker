@@ -8,13 +8,12 @@ import java.util.*;
 
 public interface UserService {
 
-     List<UserResponse> getAllUsers();
-
      Page<UserResponse> getAllUser(int page, int size);
 
      UserResponse getUserById(int id);
 
      void deleteUserById(int userId);
+
      void updateProfile(UpdateProfileRequest request);
 
 }

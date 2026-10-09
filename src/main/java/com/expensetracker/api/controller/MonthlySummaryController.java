@@ -22,6 +22,7 @@ public class MonthlySummaryController {
         this.monthlySummaryService = monthlySummaryService;
     }
 
+// @Secured("ROLE_USER")
     @GetMapping("/summary")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getMonthlySummary(

@@ -184,13 +184,13 @@ public List<BudgetResponse> getAllBudgets(Month month, Year year) {
         int userId =user.getId();
         double totalBudget = 0;
 
-        List<Budget> budgets = new ArrayList<>();
+        List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
+                userId,
+                month,
+                year
+        );
 
-         budgets = budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
-                        userId,
-                        month,
-                        year
-                );
+
 
         for(Budget budget : budgets){
 

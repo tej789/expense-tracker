@@ -4,9 +4,7 @@ import com.expensetracker.api.DTO.MessageResponse;
 import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
-import com.expensetracker.api.repository.TransactionRepository;
 import com.expensetracker.api.service.TransactionService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,28 +22,18 @@ import java.util.List;
 public class TransactionController {
 
 private final TransactionService transactionService;
-    private final TransactionRepository transactionRepository;
 
-    public TransactionController(TransactionService transactionService, TransactionRepository transactionRepository){
+    public TransactionController(TransactionService transactionService){
     this.transactionService = transactionService;
-        this.transactionRepository = transactionRepository;
     }
 
 
 @PostMapping("/transaction")
 @PreAuthorize("hasRole('USER')")
-public ResponseEntity<TransactionResponse> add(@Valid @RequestBody TransactionRequest request){
+public ResponseEntity<TransactionResponse> add(@RequestBody TransactionRequest request){
     TransactionResponse msg = transactionService.addTransaction(request);
     return new ResponseEntity<>(msg, HttpStatus.CREATED);
 }
-
-
-//@GetMapping("/transaction")
-//@PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<List<TransactionResponse>> getTransaction(){
-//        List<TransactionResponse> list = transactionService.getTransaction();
-//        return new ResponseEntity<>(list,HttpStatus.OK);
-//    }
 
 
 
