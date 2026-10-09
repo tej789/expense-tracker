@@ -11,9 +11,9 @@ GitHub:
 
 
 Today:
-=> Implemented Strategy Design Pattern In Monthly Summary And In Monthly Category summary
+=> Added Pagination In Transaction Section , Tried to Add Reset Password with OTP For Forget Password
 Tomorrow:
-=> Add Pagination In Transaction Section
+=> Complete Forget Password Section
 Impediments:
 => None
 
