@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -208,9 +209,9 @@ return response;
                 startDate,
                 endDate
         );
-        double totalExpense = 0;
+        BigDecimal totalExpense = BigDecimal.ZERO;
         for(Transaction transaction : transactions){
-            totalExpense += transaction.getAmount();
+            totalExpense = totalExpense.add(transaction.getAmount());
         }
 
 

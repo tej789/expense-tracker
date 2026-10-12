@@ -3,6 +3,7 @@ package com.expensetracker.api.DTO;
 import com.expensetracker.api.model.CategoryType;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
 
@@ -10,7 +11,7 @@ import java.time.Year;
 public class BudgetResponse {
 
     private CategoryType category;
-    private double amount;
+    private BigDecimal amount;
     private Month month;
     private Year year;
 

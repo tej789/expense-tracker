@@ -55,9 +55,9 @@ public class User {
 
 
     // for Forget Password
-//    private String resetPasswordCode;
-//
-//    private LocalDateTime resetPasswordCodeExpiry;
+    private String resetPasswordCode;
+
+    private LocalDateTime resetPasswordCodeExpiry;
 
 
 }

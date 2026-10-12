@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -16,7 +18,7 @@ public class Transaction {
 
     @NotNull
     @Positive
-    private double amount;
+    private BigDecimal amount;
     private String description;
     private LocalDate transactionDate;
 

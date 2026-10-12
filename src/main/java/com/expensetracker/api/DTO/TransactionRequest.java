@@ -6,13 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 public class TransactionRequest {
 
     @Positive(message = "Transaction amount must be greater than 0")
-    private double amount;
+    private BigDecimal amount;
 
     private String description;
 

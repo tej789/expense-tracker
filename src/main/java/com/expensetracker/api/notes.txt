@@ -11,19 +11,15 @@ GitHub:
 
 
 Today:
-=> Added Pagination In Transaction Section , Tried to Add Reset Password with OTP For Forget Password
+=> Added Forgot-Password Section and Also Required changes Like Limit Amount for Budget And Transaction
 Tomorrow:
-=> Complete Forget Password Section
+=> Reset Password Through Mail OTP Verification
 Impediments:
 => None
 
 
 
 
-
-
- */
-//
 
 
 

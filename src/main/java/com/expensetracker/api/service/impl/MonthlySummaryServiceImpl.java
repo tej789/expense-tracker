@@ -12,6 +12,7 @@ import com.expensetracker.api.service.MonthlySummaryService;
 import com.expensetracker.api.service.Strategy.ExpenseCalculationStrategy;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -56,7 +57,8 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 category
         );
 
-        double budgetAmount =0;
+        BigDecimal budgetAmount = BigDecimal.ZERO;
+
 
         if(budget != null){
             budgetAmount =budget.getAmount();
@@ -73,7 +75,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 endDate
         );
 
-        double spent = expenseCalculationStrategy.calculate(transactions, category);
+        BigDecimal spent = expenseCalculationStrategy.calculate(transactions, category);
 
         return new MonthlySummaryResponse(category, budgetAmount, spent);
     }
@@ -115,7 +117,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         // for each Category we Calculate summary
         for (CategoryType category : CategoryType.values()) {
 
-            double budgetAmount = 0;
+            BigDecimal budgetAmount = BigDecimal.ZERO;
 
             for (Budget budget : budgets) {
 
@@ -124,7 +126,7 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                     break;
                 }
             }
-      double spent = expenseCalculationStrategy.calculate(transactions, category);
+            BigDecimal spent = expenseCalculationStrategy.calculate(transactions, category);
 
 
             MonthlySummaryResponse response = new MonthlySummaryResponse(

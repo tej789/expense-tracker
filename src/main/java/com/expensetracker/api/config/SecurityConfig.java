@@ -37,6 +37,8 @@ public class SecurityConfig {
                                 "/register",
                                 "/login",
                                 "/verify-email",
+                                "/forgot-password",
+                                "reset-password",
                                 "/error"
                         ).permitAll()
                         .anyRequest().authenticated()

@@ -4,6 +4,7 @@ import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.Role;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.UserRepository;
+import com.expensetracker.api.security.LoginRateLimitor;
 import com.expensetracker.api.service.AuthService;
 import com.expensetracker.api.service.OtpNotificationSubject;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +21,13 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OtpNotificationSubject otpNotificationSubject;
+    private final LoginRateLimitor loginRateLimitor;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,OtpNotificationSubject otpNotificationSubject) {
+    public AuthServiceImpl(LoginRateLimitor loginRateLimitor,UserRepository userRepository, PasswordEncoder passwordEncoder,OtpNotificationSubject otpNotificationSubject) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpNotificationSubject = otpNotificationSubject;
+        this.loginRateLimitor = loginRateLimitor;
     }
 
 
@@ -109,27 +112,64 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    @Override
-    public User login(LoginRequest request) {
+//    @Override
+//    public User login(LoginRequest request) {
+//
+//        User user = userRepository.findByUsername(request.getUsername())
+//                .orElseThrow(() -> new NoSuchElementException("User not found"));
+//
+//        if (!user.isEmailVerified()) {
+//            throw new IllegalArgumentException(
+//                    "Please verify your email first"
+//            );
+//        }
+//
+//        if(!user.isActive()){
+//            throw new IllegalArgumentException("User Account Is Inactive");
+//        }
+//
+//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//            throw new IllegalArgumentException("Invalid password");
+//        }
+//        return user;
+//    }
 
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+@Override
+public User login(LoginRequest request) {
 
-        if (!user.isEmailVerified()) {
+        String username = request.getUsername();
+
+        if(loginRateLimitor.isBlocked(username)){
             throw new IllegalArgumentException(
-                    "Please verify your email first"
+                    "Too many Login Attempts.Try After 15 Minutes."
             );
         }
 
-        if(!user.isActive()){
-            throw new IllegalArgumentException("User Account Is Inactive");
-        }
+    User user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
-        }
-        return user;
+    if (!user.isEmailVerified()) {
+        throw new IllegalArgumentException(
+                "Please verify your email first"
+        );
     }
+
+    if(!user.isActive()){
+        throw new IllegalArgumentException("User Account Is Inactive");
+    }
+
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+
+        loginRateLimitor.loginFailed(username);
+        throw new IllegalArgumentException("Invalid password");
+    }
+
+    loginRateLimitor.loginSucceeded(username);
+
+    return user;
+}
+
+
 
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
@@ -142,11 +182,11 @@ public class AuthServiceImpl implements AuthService {
         String resetPasswordCode =
                 String.format("%06d", OTP.nextInt(1000000));
 
-//        user.setResetPasswordCode(resetPasswordCode);
-//
-//        user.setResetPasswordCodeExpiry(
-//                LocalDateTime.now().plusMinutes(10)
-//        );
+        user.setResetPasswordCode(resetPasswordCode);
+
+        user.setResetPasswordCodeExpiry(
+                LocalDateTime.now().plusMinutes(10)
+        );
 
         userRepository.save(user);
 
@@ -156,6 +196,32 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
+    @Override
+public void resetPassword(ResetPasswordRequest request){
+        User user = userRepository.findByMail(request.getMail())
+                .orElseThrow(()->
+                        new NoSuchElementException("User Not Found"));
 
+        if (user.getResetPasswordCode() == null ||
+                user.getResetPasswordCodeExpiry() == null ||
+                LocalDateTime.now().isAfter(
+                        user.getResetPasswordCodeExpiry())) {
+
+            throw new IllegalArgumentException(
+                    "Reset password OTP has expired or is invalid");
+        }
+
+        if (!user.getResetPasswordCode()
+                .equals(request.getResetPasswordCode())) {
+
+            throw new IllegalArgumentException("Invalid OTP");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetPasswordCode(null);
+        user.setResetPasswordCodeExpiry(null);
+        userRepository.save(user);
+
+}
 
 }

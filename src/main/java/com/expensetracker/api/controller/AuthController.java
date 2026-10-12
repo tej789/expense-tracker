@@ -1,9 +1,6 @@
 package com.expensetracker.api.controller;
 
-import com.expensetracker.api.DTO.LoginRequest;
-import com.expensetracker.api.DTO.LoginResponse;
-import com.expensetracker.api.DTO.RegisterRequest;
-import com.expensetracker.api.DTO.RegisterResponse;
+import com.expensetracker.api.DTO.*;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.service.AuthService;
 import com.expensetracker.api.service.JwtService;
@@ -43,5 +40,21 @@ public class AuthController {
         return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse> forgetPassword(
+            @Valid @RequestBody ForgotPasswordRequest request
+    ){
+        authService.forgotPassword(request);
+
+        return  new ResponseEntity<>(new ApiResponse("Password reset Otp sent Successfully"), HttpStatus.OK);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse> ResetPassword(
+            @Valid @RequestBody ResetPasswordRequest request){
+                authService.resetPassword(request);
+
+                return new ResponseEntity<>(new ApiResponse("Password Reset Successfully"),HttpStatus.OK);
+    }
 
 }

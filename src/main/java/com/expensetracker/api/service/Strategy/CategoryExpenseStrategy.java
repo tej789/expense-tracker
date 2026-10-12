@@ -3,19 +3,20 @@ import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.Transaction;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Component
 public class CategoryExpenseStrategy implements ExpenseCalculationStrategy {
 
     @Override
-    public double calculate(List<Transaction> transactions, CategoryType category) {
+    public BigDecimal calculate(List<Transaction> transactions, CategoryType category) {
 
-        double spent = 0;
+        BigDecimal spent = BigDecimal.ZERO;
 
         for (Transaction transaction : transactions) {
 
             if (transaction.getCategory() == category) {
-                spent += transaction.getAmount();
+                spent = spent.add(transaction.getAmount());
             }
         }
 

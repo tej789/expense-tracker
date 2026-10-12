@@ -11,6 +11,7 @@ import com.expensetracker.api.service.BudgetService;
 import com.expensetracker.api.service.CurrentUserService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class BudgetServiceImpl  implements BudgetService {
 
     @Override
     public BudgetResponse setBudget(BudgetRequest request) {
-        if (request.getAmount() < 1) {
+        if (request.getAmount().compareTo(BigDecimal.ONE) < 0) {
             throw new IllegalArgumentException("Amount should not be zero or negative");
         }
 
@@ -122,7 +123,8 @@ public class BudgetServiceImpl  implements BudgetService {
         if (budget.isPresent()) {
             response.setAmount(budget.get().getAmount());
         } else {
-            response.setAmount(0);
+            response.setAmount(BigDecimal.ZERO);
+
         }
 
         return response;
@@ -159,7 +161,7 @@ public List<BudgetResponse> getAllBudgets(Month month, Year year) {
         response.setMonth(month);
         response.setYear(year);
 
-        double amount = 0;
+        BigDecimal amount = BigDecimal.ZERO;
 
         for (Budget budget : budgets) {
             if (budget.getCategory() == category) {
@@ -182,7 +184,7 @@ public List<BudgetResponse> getAllBudgets(Month month, Year year) {
         User user = currentUserService.getCurrentUser();
 
         int userId =user.getId();
-        double totalBudget = 0;
+        BigDecimal totalBudget = BigDecimal.ZERO;
 
         List<Budget> budgets = budgetRepository.findByUserIdAndMonthAndYearAndActiveTrue(
                 userId,
@@ -194,7 +196,7 @@ public List<BudgetResponse> getAllBudgets(Month month, Year year) {
 
         for(Budget budget : budgets){
 
-             totalBudget += budget.getAmount();
+            totalBudget = totalBudget.add(budget.getAmount());
         }
      TotalBudgetResponse response = new TotalBudgetResponse();
         response.setMonth(month);
