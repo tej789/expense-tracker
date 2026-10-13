@@ -26,6 +26,9 @@ public interface TransactionRepository extends JpaRepository<Transaction,Integer
             LocalDate endDate
     );
 
+    List<Transaction> findByUserId(int userId);
+
+    void deleteByUserId(int i);
 }
 
 

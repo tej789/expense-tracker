@@ -65,24 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    @Override
-    public List<TransactionResponse> getTransaction(){
-        User user = currentUserService.getCurrentUser();
-        int id = user.getId();
-        List<Transaction> transactions = transactionRepository.findByUserIdAndActiveTrue(id);
-        List<TransactionResponse> responses = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            TransactionResponse response = new TransactionResponse();
-            response.setId(transaction.getId());
-            response.setAmount(transaction.getAmount());
-            response.setDescription(transaction.getDescription());
-            response.setTransactionDate(transaction.getTransactionDate());
-            response.setType(transaction.getType());
-            response.setCategory(transaction.getCategory());
-            responses.add(response);
-        }
-        return responses;
-    }
+
 
     @Override
     public Page<TransactionResponse> getTransactions(int page, int size){

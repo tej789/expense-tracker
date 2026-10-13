@@ -13,8 +13,6 @@ public interface TransactionService {
 
      TransactionResponse addTransaction(TransactionRequest request);
 
-  List<TransactionResponse>  getTransaction();
-
     Page<TransactionResponse> getTransactions(int page, int size);
 
     List<TransactionResponse> getTransactionByMonth(Year year, Month month);

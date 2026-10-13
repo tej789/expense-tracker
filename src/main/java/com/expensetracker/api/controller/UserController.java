@@ -53,6 +53,17 @@ return new ResponseEntity<>(usersPage, HttpStatus.OK);
         );
     }
 
+    @PutMapping("user/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> activateUser(
+            @PathVariable int id
+    ){
+        userService.activateUser(id);
+        return ResponseEntity.ok(
+                new ApiResponse("User Activated Successfully")
+        );
+    }
+
     @PutMapping("/profile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse> updateProfile(

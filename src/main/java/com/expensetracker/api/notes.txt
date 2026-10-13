@@ -11,16 +11,9 @@ GitHub:
 
 
 Today:
-=> Added Forgot-Password Section and Also Required changes Like Limit Amount for Budget And Transaction
+=> Added Reset Password Through Mail OTP Verification , Implemented Admin Initializer
 Tomorrow:
-=> Reset Password Through Mail OTP Verification
+=> Add Test Cases using Mockito Extension
 Impediments:
 => None
-
-
-
-
-
-
-
 

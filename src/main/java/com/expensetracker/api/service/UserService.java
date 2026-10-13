@@ -14,6 +14,8 @@ public interface UserService {
 
      void deleteUserById(int userId);
 
+     void activateUser(int userId);
+
      void updateProfile(UpdateProfileRequest request);
 
 }

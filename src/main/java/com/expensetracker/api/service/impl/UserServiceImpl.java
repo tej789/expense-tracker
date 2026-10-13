@@ -109,6 +109,38 @@ public class UserServiceImpl implements UserService {
         budgetRepository.saveAll(budgets);
     }
 
+    @Transactional
+    @Override
+    public void activateUser(int userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new NoSuchElementException("User Not Found"));
+
+        if (user.isActive()) {
+            throw new IllegalArgumentException("User Is Already Active");
+        }
+
+        user.setActive(true);
+
+        List<Transaction> transactions =
+                transactionRepository.findByUserId(userId);
+
+        for (Transaction transaction : transactions) {
+            transaction.setActive(true);
+        }
+
+        List<Budget> budgets =
+                budgetRepository.findByUserId(userId);
+
+        for (Budget budget : budgets) {
+            budget.setActive(true);
+        }
+
+        userRepository.save(user);
+        transactionRepository.saveAll(transactions);
+        budgetRepository.saveAll(budgets);
+    }
 
     @Override
     public void updateProfile(UpdateProfileRequest request) {

@@ -33,7 +33,6 @@ public class LoginRateLimitor{
      return false;
     }
 
-
     public void loginFailed(String username) {
         int count = attempts.merge(username, 1, Integer::sum);
 

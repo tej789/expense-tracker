@@ -1,5 +1,6 @@
 package com.expensetracker.api.repository;
 
+import com.expensetracker.api.model.Role;
 import com.expensetracker.api.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     Optional<User> findByMail(String mail);
 
     Page<User> findByActiveTrue(Pageable pageable);
+
+    boolean existsByRole(Role role);
 }
