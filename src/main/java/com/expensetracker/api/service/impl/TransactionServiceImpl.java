@@ -1,9 +1,13 @@
 package com.expensetracker.api.service.impl;
 
 import com.expensetracker.api.DTO.*;
+import com.expensetracker.api.model.CategoryType;
 import com.expensetracker.api.model.Transaction;
+import com.expensetracker.api.model.TransactionType;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
+import com.expensetracker.api.repository.TransactionSpecifications;
+import com.expensetracker.api.service.BudgetAlertService;
 import com.expensetracker.api.service.CurrentUserService;
 import com.expensetracker.api.service.TransactionService;
 import org.springframework.data.domain.Page;
@@ -25,15 +29,29 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CurrentUserService currentUserService;
     private final AmountValidationHandler amountValidationHandler;
+    private final BudgetAlertService budgetAlertService;
 
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository,CurrentUserService currentUserService,DateValidationHandler dateValidationHandler,AmountValidationHandler amountValidationHandler){
+
+    public TransactionServiceImpl(BudgetAlertService budgetAlertService,TransactionRepository transactionRepository,CurrentUserService currentUserService,DateValidationHandler dateValidationHandler,AmountValidationHandler amountValidationHandler){
         this.transactionRepository = transactionRepository;
         this.currentUserService = currentUserService;
         this.amountValidationHandler = amountValidationHandler;
+        this.budgetAlertService = budgetAlertService;
 
 
         amountValidationHandler.setNext(dateValidationHandler);
+    }
+    private void checkBudgetAlert(Transaction transaction) {
+        if (transaction.getType() == TransactionType.EXPENSE) {
+            LocalDate date = transaction.getTransactionDate();
+
+            budgetAlertService.checkBudgetAlert(
+                    date.getMonth(),
+                    Year.of(date.getYear()),
+                    transaction.getCategory()
+            );
+        }
     }
 
     @Override
@@ -52,6 +70,8 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setUser(user);
 
         transactionRepository.save(transaction);
+
+        checkBudgetAlert(transaction);
 
         TransactionResponse res = new TransactionResponse();
 
@@ -147,6 +167,8 @@ return response;
 
         Transaction x = transactionRepository.save(n);
 
+        checkBudgetAlert(x);
+
         TransactionResponse res = new TransactionResponse();
         res.setId(x.getId());
         res.setAmount(x.getAmount());
@@ -203,6 +225,136 @@ return response;
         response.setYear(year);
         response.setTotalExpense(totalExpense);
         return response;
+    }
+
+
+    @Override
+    public Page<TransactionResponse> filterTransactions(
+            LocalDate startDate,
+            LocalDate endDate,
+            CategoryType category,
+            TransactionType type,
+            BigDecimal minAmount,
+            BigDecimal maxAmount,
+            int page,
+            int size
+    ){
+
+        if(page<0 || size <1||size>100){
+            throw new IllegalArgumentException("Invalid pagination values");
+        }
+
+        if(startDate != null && endDate !=null
+        && startDate.isAfter(endDate)){
+            throw new IllegalArgumentException(
+                    "Start date cannot be after end date"
+            );
+        }
+
+        if (minAmount != null && minAmount.signum() < 0
+                || maxAmount != null && maxAmount.signum() < 0) {
+            throw new IllegalArgumentException(
+                    "Amounts cannot be negative"
+            );
+        }
+
+        if (minAmount != null && maxAmount != null
+                && minAmount.compareTo(maxAmount) > 0) {
+            throw new IllegalArgumentException(
+                    "Minimum amount cannot exceed maximum amount"
+            );
+        }
+
+        User user = currentUserService.getCurrentUser();
+
+        var specification = TransactionSpecifications.filters(
+                user.getId(),
+                startDate,
+                endDate,
+                category,
+                type,
+                minAmount,
+                maxAmount
+        );
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        return transactionRepository.findAll(specification,pageable)
+                .map(transaction ->{
+                    TransactionResponse response = new TransactionResponse();
+                    response.setId(transaction.getId());
+                    response.setAmount(transaction.getAmount());
+                    response.setDescription(transaction.getDescription());
+                    response.setTransactionDate(
+                            transaction.getTransactionDate()
+                    );
+                    response.setCategory(transaction.getCategory());
+                    response.setType(transaction.getType());
+                    return response;
+                });
+
+
+    }
+
+    @Override
+    public byte[] exportMonthlyTransactions(Month month,Year year){
+        User user = currentUserService.getCurrentUser();
+
+        LocalDate startDate =LocalDate.of(year.getValue(),month,1);
+
+        LocalDate endDate = LocalDate.of(
+                year.getValue(),
+                month,
+                month.length(year.isLeap())
+        );
+
+        List<Transaction> transactions =
+                transactionRepository
+                        .findByUserIdAndTransactionDateBetweenAndActiveTrue(
+                                user.getId(),
+                                startDate,
+                                endDate
+                        );
+
+        StringBuilder csv = new StringBuilder();
+
+        csv.append("Date,Description,Category,Type,Amount\r\n");
+
+        for (Transaction transaction : transactions) {
+            csv.append(transaction.getTransactionDate()).append(",");
+            csv.append(escapeCsv(transaction.getDescription())).append(",");
+            csv.append(escapeCsv(
+                    transaction.getCategory() == null
+                            ? ""
+                            : transaction.getCategory().toString()
+            )).append(",");
+            csv.append(escapeCsv(
+                    transaction.getType() == null
+                            ? ""
+                            : transaction.getType().toString()
+            )).append(",");
+            csv.append(transaction.getAmount()).append("\r\n");
+        }
+
+        return csv.toString().getBytes(
+                java.nio.charset.StandardCharsets.UTF_8
+        );
+
+    }
+
+    @Override
+    public String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        // Reduce spreadsheet formula-injection risk in text fields.
+        if (!value.isEmpty()
+                && "=+-@".indexOf(value.charAt(0)) >= 0) {
+            value = "'" + value;
+        }
+
+        return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
 }

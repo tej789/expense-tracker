@@ -11,9 +11,9 @@ GitHub:
 
 
 Today:
-=> Added Reset Password Through Mail OTP Verification , Implemented Admin Initializer
+=> Added and Updated Test Cases using Mockito Extension , Starting filter through Transaction's parameter like startDate,endDate,category,type,minAmount,maxAmount using Specification
 Tomorrow:
-=> Add Test Cases using Mockito Extension
+=> Complete Filter through transaction parameter by specification , Add CSV file for monthly transactions
 Impediments:
 => None
 
