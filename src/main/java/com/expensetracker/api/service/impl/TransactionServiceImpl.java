@@ -308,8 +308,7 @@ return response;
                 month.length(year.isLeap())
         );
 
-        List<Transaction> transactions =
-                transactionRepository
+        List<Transaction> transactions = transactionRepository
                         .findByUserIdAndTransactionDateBetweenAndActiveTrue(
                                 user.getId(),
                                 startDate,

@@ -37,11 +37,7 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
     }
 
     @Override
-    public void checkBudgetAlert(
-            Month month,
-            Year year,
-            CategoryType category
-    ) {
+    public void checkBudgetAlert(Month month, Year year, CategoryType category) {
         User user = currentUserService.getCurrentUser();
 
         MonthlySummaryResponse summary =
@@ -56,8 +52,7 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
             return;
         }
 
-        BigDecimal warningThreshold =
-                budget.multiply(new BigDecimal("0.80"));
+        BigDecimal warning = budget.multiply(new BigDecimal("0.80"));
 
         BudgetAlertType alertType;
         String subject;
@@ -74,7 +69,7 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
                     + "Spent: " + spent + "\n"
                     + "Remaining: " + summary.getRemaining();
         }
-        else if (spent.compareTo(warningThreshold) >= 0) {
+        else if (spent.compareTo(warning) >= 0) {
             alertType = BudgetAlertType.WARNING_80_PERCENT;
             subject = "Budget warning: " + category;
 

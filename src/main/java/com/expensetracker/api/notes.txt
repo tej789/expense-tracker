@@ -11,9 +11,228 @@ GitHub:
 
 
 Today:
-=> Added and Updated Test Cases using Mockito Extension , Starting filter through Transaction's parameter like startDate,endDate,category,type,minAmount,maxAmount using Specification
+=> Completed Filter through transaction parameter by specification , Added CSV file for monthly transactions
 Tomorrow:
-=> Complete Filter through transaction parameter by specification , Add CSV file for monthly transactions
+=> Budget Alert Service , Make User Inactive to Active with Budgets And Transactions
 Impediments:
 => None
 
+1. Improve budget alert reliability
+Recommended next
+
+Make sure each threshold sends only one email per user, category, and month.
+Handle simultaneous requests, email failures, and transaction updates that change categories or dates.
+ Test these cases with JUnit and Mockito.
+Why: your alert feature works; now make it reliable.
+
+
+
+
+2. Add Flyway database migrations
+Manage schema changes through versioned migration files instead of relying on automatic schema updates.
+ This is useful when deploying the project to a fresh MySQL database.
+
+
+
+3. Add integration tests
+Test actual API requests, JWT authentication, authorization, database operations, CSV downloads, and budget alerts. Use Testcontainers with MySQL for realistic database tests.
+
+
+
+
+4. Add Swagger / OpenAPI
+Document all endpoints, request parameters, response formats, and authentication requirements. This makes the API easier to demonstrate during interviews.
+
+
+
+
+5. Docker and GitHub Actions
+Containerize the Spring Boot application and MySQL, then configure CI to build the project and run tests automatically whenever you push changes.
+
+
+
+My suggested order
+Priority	Task
+1	Test and harden budget alert reliability
+2	Add Flyway migrations
+3	Add integration tests
+4	Configure Swagger
+5	Docker + GitHub Actions
+
+
+```java
+package com.expensetracker.api.service;
+
+import com.expensetracker.api.DTO.MonthlySummaryResponse;
+import com.expensetracker.api.model.BudgetAlert;
+import com.expensetracker.api.model.BudgetAlertType;
+import com.expensetracker.api.model.CategoryType;
+import com.expensetracker.api.model.User;
+import com.expensetracker.api.repository.BudgetAlertRepository;
+import com.expensetracker.api.service.impl.BudgetAlertServiceImpl;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.time.Month;
+import java.time.Year;
+
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class BudgetAlertServiceTest {
+
+    @Mock
+    private MonthlySummaryService monthlySummaryService;
+
+    @Mock
+    private CurrentUserService currentUserService;
+
+    @Mock
+    private EmailService emailService;
+
+    @Mock
+    private BudgetAlertRepository budgetAlertRepository;
+
+    @InjectMocks
+    private BudgetAlertServiceImpl budgetAlertService;
+
+    private final Month month = Month.OCTOBER;
+    private final Year year = Year.of(2026);
+    private final CategoryType category = CategoryType.Food;
+
+    private User createUser() {
+        User user = new User();
+        user.setId(1);
+        user.setUsername("tej");
+        user.setMail("tej@example.com");
+        return user;
+    }
+
+    private MonthlySummaryResponse createSummary(
+            String budget,
+            String spent
+    ) {
+        return new MonthlySummaryResponse(
+                category,
+                new BigDecimal(budget),
+                new BigDecimal(spent)
+        );
+    }
+
+    @Test
+    void shouldSend80PercentWarningOnlyOnce() {
+        User user = createUser();
+
+        when(currentUserService.getCurrentUser())
+                .thenReturn(user);
+
+        when(monthlySummaryService.getSummaryOfCategory(
+                month, year, category
+        )).thenReturn(createSummary("5000", "4000"));
+
+        // First check: not sent.
+        // Second check: already sent.
+        when(budgetAlertRepository
+                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
+                        user, category, month, 2026,
+                        BudgetAlertType.WARNING_80_PERCENT
+                )).thenReturn(false, true);
+
+        budgetAlertService.checkBudgetAlert(month, year, category);
+        budgetAlertService.checkBudgetAlert(month, year, category);
+
+        verify(emailService, times(1))
+                .sendEmail(
+                        eq("tej@example.com"),
+                        contains("Budget warning"),
+                        anyString()
+                );
+
+        verify(budgetAlertRepository, times(1))
+                .save(any(BudgetAlert.class));
+    }
+
+    @Test
+    void shouldSend100PercentAlertOnlyOnce() {
+        User user = createUser();
+
+        when(currentUserService.getCurrentUser())
+                .thenReturn(user);
+
+        when(monthlySummaryService.getSummaryOfCategory(
+                month, year, category
+        )).thenReturn(createSummary("5000", "5200"));
+
+        when(budgetAlertRepository
+                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
+                        user, category, month, 2026,
+                        BudgetAlertType.EXCEEDED_100_PERCENT
+                )).thenReturn(false, true);
+
+        budgetAlertService.checkBudgetAlert(month, year, category);
+        budgetAlertService.checkBudgetAlert(month, year, category);
+
+        verify(emailService, times(1))
+                .sendEmail(
+                        eq("tej@example.com"),
+                        contains("Budget limit reached"),
+                        anyString()
+                );
+
+        verify(budgetAlertRepository, times(1))
+                .save(any(BudgetAlert.class));
+    }
+
+    @Test
+    void shouldSendBothAlertsAtTheirRespectiveThresholds() {
+        User user = createUser();
+
+        when(currentUserService.getCurrentUser())
+                .thenReturn(user);
+
+        when(monthlySummaryService.getSummaryOfCategory(
+                month, year, category
+        )).thenReturn(
+                createSummary("5000", "4000"),
+                createSummary("5000", "5000")
+        );
+
+        when(budgetAlertRepository
+                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
+                        user, category, month, 2026,
+                        BudgetAlertType.WARNING_80_PERCENT
+                )).thenReturn(false);
+
+        when(budgetAlertRepository
+                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
+                        user, category, month, 2026,
+                        BudgetAlertType.EXCEEDED_100_PERCENT
+                )).thenReturn(false);
+
+        budgetAlertService.checkBudgetAlert(month, year, category);
+        budgetAlertService.checkBudgetAlert(month, year, category);
+
+        verify(emailService, times(1))
+                .sendEmail(
+                        eq("tej@example.com"),
+                        contains("Budget warning"),
+                        anyString()
+                );
+
+        verify(emailService, times(1))
+                .sendEmail(
+                        eq("tej@example.com"),
+                        contains("Budget limit reached"),
+                        anyString()
+                );
+
+        verify(budgetAlertRepository, times(2))
+                .save(any(BudgetAlert.class));
+    }
+}
+```
