@@ -1,7 +1,9 @@
 package com.expensetracker.api.security;
+import com.expensetracker.api.model.LoginAttempt;
+import com.expensetracker.api.repository.LoginAttemptRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class LoginRateLimitor{
@@ -9,46 +11,60 @@ public class LoginRateLimitor{
     private static final int MAX_ATTEMPTS = 3;
     private static final int LOCK_MINUTES = 15;
 
+    private final LoginAttemptRepository loginAttemptRepository;
 
-    private final ConcurrentHashMap<String,Integer> attempts =
-            new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<String,LocalDateTime> blockedUsers =
-            new ConcurrentHashMap<>();
+    public LoginRateLimitor(
+            LoginAttemptRepository loginAttemptRepository
+    ){
+        this.loginAttemptRepository = loginAttemptRepository;
+    }
 
     public boolean isBlocked(String username){
-        LocalDateTime blockUntill =blockedUsers.get(username);
 
-     if(blockUntill == null){
-         return false;
-     }
-
-     if(LocalDateTime.now().isBefore(blockUntill)){
-         return true;
-     }
-
-     blockedUsers.remove(username , blockUntill);
-     attempts.remove(username);
-
-     return false;
+        return loginAttemptRepository.findByUsername(username)
+                .map(attempt -> attempt.getBlockedUntill() != null
+                && attempt.getBlockedUntill()
+                        .isAfter(LocalDateTime.now()))
+                .orElse(false);
     }
 
+    @Transactional
     public void loginFailed(String username) {
-        int count = attempts.merge(username, 1, Integer::sum);
+        LoginAttempt attempt = loginAttemptRepository
+                .findByUsername(username)
+                .orElseGet(()->
+                {
+                    LoginAttempt newAttempt = new LoginAttempt();
+                    newAttempt.setUsername(username);
+                    return newAttempt;
+                });
 
-        if (count >= MAX_ATTEMPTS) {
-            blockedUsers.put(
-                    username,
-                    LocalDateTime.now().plusMinutes(LOCK_MINUTES)
-            );
+        LocalDateTime now = LocalDateTime.now();
+
+        if(attempt.getBlockedUntill() != null
+        && !attempt.getBlockedUntill().isAfter(now)){
+            attempt.setFailedAttempts(0);
+            attempt.setBlockedUntill(null);
         }
+
+        attempt.setFailedAttempts(attempt.getFailedAttempts()+1);
+        attempt.setLastFailedAt(now);
+
+        if(attempt.getFailedAttempts() >= MAX_ATTEMPTS){
+            attempt.setBlockedUntill(now.plusMinutes(LOCK_MINUTES));
+        }
+        loginAttemptRepository.save(attempt);
     }
 
+    @Transactional
     public void loginSucceeded(String username) {
-        attempts.remove(username);
-        blockedUsers.remove(username);
+    loginAttemptRepository.deleteByUsername(username);
     }
 }
+
+
+
+
 // Concurrent Hashmap
     /*
     A ConcurrentHashMap is a high-performance, thread-safe version of HashMap in Java.
@@ -67,6 +83,7 @@ Instead of locking the entire map, it uses Bucket/Segment Locking:
 • If Thread A is writing to Bucket 1, only Bucket 1 is locked.
 • Thread B can write to Bucket 2 at the exact same time without waiting.
 • Reading data (.get()) usually requires no locks at all, making it lightning-fast.
+
 
 
      */

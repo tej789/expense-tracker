@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 public class EmailController {
 
@@ -38,7 +40,7 @@ public class EmailController {
         authService.verifyEmail(request);
 
         return ResponseEntity.ok(
-                new Response("Success", "Email verified successfully")
+                new Response("Success", "Email verified successfully", LocalDateTime.now())
         );
     }
 }

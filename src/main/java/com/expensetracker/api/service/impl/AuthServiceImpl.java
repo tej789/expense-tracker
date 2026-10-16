@@ -145,8 +145,13 @@ public User login(LoginRequest request) {
             );
         }
 
-    User user = userRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> new NoSuchElementException("User not found"));
+User user = userRepository.findByUsername(username)
+        .orElseThrow(() ->{
+            loginRateLimitor.loginFailed(username);
+            return new IllegalArgumentException(
+                    "Invalid username or password"
+            );
+        });
 
     if (!user.isEmailVerified()) {
         throw new IllegalArgumentException(
@@ -161,7 +166,7 @@ public User login(LoginRequest request) {
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 
         loginRateLimitor.loginFailed(username);
-        throw new IllegalArgumentException("Invalid password");
+        throw new IllegalArgumentException("Invalid username or password");
     }
 
     loginRateLimitor.loginSucceeded(username);

@@ -4,7 +4,6 @@ import com.expensetracker.api.DTO.TotalExpenseResponse;
 import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.DTO.TransactionResponse;
 import com.expensetracker.api.model.CategoryType;
-import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.TransactionType;
 import org.springframework.data.domain.Page;
 

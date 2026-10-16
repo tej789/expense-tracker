@@ -11,9 +11,9 @@ GitHub:
 
 
 Today:
-=> Completed Filter through transaction parameter by specification , Added CSV file for monthly transactions
+=> Added Budget Alert Service , Made User Inactive to Active with Budgets And Transactions
 Tomorrow:
-=> Budget Alert Service , Make User Inactive to Active with Budgets And Transactions
+=> Implement Login Rate Limiter
 Impediments:
 => None
 
@@ -60,179 +60,55 @@ Priority	Task
 5	Docker + GitHub Actions
 
 
-```java
-package com.expensetracker.api.service;
+@Override
+public User login(LoginRequest request) {
 
-import com.expensetracker.api.DTO.MonthlySummaryResponse;
-import com.expensetracker.api.model.BudgetAlert;
-import com.expensetracker.api.model.BudgetAlertType;
-import com.expensetracker.api.model.CategoryType;
-import com.expensetracker.api.model.User;
-import com.expensetracker.api.repository.BudgetAlertRepository;
-import com.expensetracker.api.service.impl.BudgetAlertServiceImpl;
+    String username = request.getUsername();
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.Month;
-import java.time.Year;
-
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
-class BudgetAlertServiceTest {
-
-    @Mock
-    private MonthlySummaryService monthlySummaryService;
-
-    @Mock
-    private CurrentUserService currentUserService;
-
-    @Mock
-    private EmailService emailService;
-
-    @Mock
-    private BudgetAlertRepository budgetAlertRepository;
-
-    @InjectMocks
-    private BudgetAlertServiceImpl budgetAlertService;
-
-    private final Month month = Month.OCTOBER;
-    private final Year year = Year.of(2026);
-    private final CategoryType category = CategoryType.Food;
-
-    private User createUser() {
-        User user = new User();
-        user.setId(1);
-        user.setUsername("tej");
-        user.setMail("tej@example.com");
-        return user;
-    }
-
-    private MonthlySummaryResponse createSummary(
-            String budget,
-            String spent
-    ) {
-        return new MonthlySummaryResponse(
-                category,
-                new BigDecimal(budget),
-                new BigDecimal(spent)
+    // 1. Check if the username is blocked
+    if (loginRateLimitor.isBlocked(username)) {
+        throw new IllegalArgumentException(
+                "Too many login attempts. Try again after 15 minutes."
         );
     }
 
-    @Test
-    void shouldSend80PercentWarningOnlyOnce() {
-        User user = createUser();
-
-        when(currentUserService.getCurrentUser())
-                .thenReturn(user);
-
-        when(monthlySummaryService.getSummaryOfCategory(
-                month, year, category
-        )).thenReturn(createSummary("5000", "4000"));
-
-        // First check: not sent.
-        // Second check: already sent.
-        when(budgetAlertRepository
-                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
-                        user, category, month, 2026,
-                        BudgetAlertType.WARNING_80_PERCENT
-                )).thenReturn(false, true);
-
-        budgetAlertService.checkBudgetAlert(month, year, category);
-        budgetAlertService.checkBudgetAlert(month, year, category);
-
-        verify(emailService, times(1))
-                .sendEmail(
-                        eq("tej@example.com"),
-                        contains("Budget warning"),
-                        anyString()
+    // 2. Find user and record failure for unknown usernames
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> {
+                loginRateLimitor.loginFailed(username);
+                return new IllegalArgumentException(
+                        "Invalid username or password"
                 );
+            });
 
-        verify(budgetAlertRepository, times(1))
-                .save(any(BudgetAlert.class));
-    }
-
-    @Test
-    void shouldSend100PercentAlertOnlyOnce() {
-        User user = createUser();
-
-        when(currentUserService.getCurrentUser())
-                .thenReturn(user);
-
-        when(monthlySummaryService.getSummaryOfCategory(
-                month, year, category
-        )).thenReturn(createSummary("5000", "5200"));
-
-        when(budgetAlertRepository
-                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
-                        user, category, month, 2026,
-                        BudgetAlertType.EXCEEDED_100_PERCENT
-                )).thenReturn(false, true);
-
-        budgetAlertService.checkBudgetAlert(month, year, category);
-        budgetAlertService.checkBudgetAlert(month, year, category);
-
-        verify(emailService, times(1))
-                .sendEmail(
-                        eq("tej@example.com"),
-                        contains("Budget limit reached"),
-                        anyString()
-                );
-
-        verify(budgetAlertRepository, times(1))
-                .save(any(BudgetAlert.class));
-    }
-
-    @Test
-    void shouldSendBothAlertsAtTheirRespectiveThresholds() {
-        User user = createUser();
-
-        when(currentUserService.getCurrentUser())
-                .thenReturn(user);
-
-        when(monthlySummaryService.getSummaryOfCategory(
-                month, year, category
-        )).thenReturn(
-                createSummary("5000", "4000"),
-                createSummary("5000", "5000")
+    // 3. Check email verification
+    if (!user.isEmailVerified()) {
+        throw new IllegalArgumentException(
+                "Please verify your email first"
         );
-
-        when(budgetAlertRepository
-                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
-                        user, category, month, 2026,
-                        BudgetAlertType.WARNING_80_PERCENT
-                )).thenReturn(false);
-
-        when(budgetAlertRepository
-                .existsByUserAndCategoryAndMonthAndYearAndAlertType(
-                        user, category, month, 2026,
-                        BudgetAlertType.EXCEEDED_100_PERCENT
-                )).thenReturn(false);
-
-        budgetAlertService.checkBudgetAlert(month, year, category);
-        budgetAlertService.checkBudgetAlert(month, year, category);
-
-        verify(emailService, times(1))
-                .sendEmail(
-                        eq("tej@example.com"),
-                        contains("Budget warning"),
-                        anyString()
-                );
-
-        verify(emailService, times(1))
-                .sendEmail(
-                        eq("tej@example.com"),
-                        contains("Budget limit reached"),
-                        anyString()
-                );
-
-        verify(budgetAlertRepository, times(2))
-                .save(any(BudgetAlert.class));
     }
+
+    // 4. Check account status
+    if (!user.isActive()) {
+        throw new IllegalArgumentException(
+                "User account is inactive"
+        );
+    }
+
+    // 5. Verify password
+    if (!passwordEncoder.matches(
+            request.getPassword(), user.getPassword())) {
+
+        loginRateLimitor.loginFailed(username);
+
+        throw new IllegalArgumentException(
+                "Invalid username or password"
+        );
+    }
+
+    // 6. Clear failed attempts after successful login
+    loginRateLimitor.loginSucceeded(username);
+
+    return user;
 }
-```
+
