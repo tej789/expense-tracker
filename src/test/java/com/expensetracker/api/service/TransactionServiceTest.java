@@ -7,7 +7,6 @@ import com.expensetracker.api.DTO.TransactionRequest;
 import com.expensetracker.api.model.Transaction;
 import com.expensetracker.api.model.User;
 import com.expensetracker.api.repository.TransactionRepository;
-import com.expensetracker.api.repository.UserRepository;
 import com.expensetracker.api.service.impl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

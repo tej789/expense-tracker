@@ -41,8 +41,7 @@ public class LoginRateLimitor{
 
         LocalDateTime now = LocalDateTime.now();
 
-        if(attempt.getBlockedUntill() != null
-        && !attempt.getBlockedUntill().isAfter(now)){
+        if(attempt.getBlockedUntill() != null && !attempt.getBlockedUntill().isAfter(now)){
             attempt.setFailedAttempts(0);
             attempt.setBlockedUntill(null);
         }

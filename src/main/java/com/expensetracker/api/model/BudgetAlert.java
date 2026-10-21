@@ -8,15 +8,8 @@ import java.time.Year;
 @Table(
         name = "budget_alerts",
         uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_budget_alert_period",
-                        columnNames = {
-                                "user_id",
-                                "category",
-                                "month",
-                                "year",
-                                "alert_type"
-                        }
+         @UniqueConstraint(  name = "uk_budget_alert_period",
+          columnNames = { "user_id", "category","month", "year", "alert_type" }
                 )
         }
 )

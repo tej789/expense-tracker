@@ -1,6 +1,7 @@
 package com.expensetracker.api.DTO;
 
 import com.expensetracker.api.model.CategoryType;
+import com.expensetracker.api.model.PaymentMethod;
 import com.expensetracker.api.model.TransactionType;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class TransactionResponse {
     private LocalDate transactionDate;
     private TransactionType type;
     private CategoryType category;
+    private PaymentMethod paymentMethod;
 
     public TransactionResponse() {}
 }

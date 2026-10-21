@@ -67,6 +67,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDate(request.getTransactionDate());
         transaction.setType(request.getType());
         transaction.setCategory(request.getCategory());
+        transaction.setPaymentMethod(request.getPaymentMethod());
         transaction.setUser(user);
 
         transactionRepository.save(transaction);
@@ -81,6 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
         res.setTransactionDate(transaction.getTransactionDate());
         res.setType(transaction.getType());
         res.setCategory(transaction.getCategory());
+        res.setPaymentMethod(transaction.getPaymentMethod());
         return res;
 
     }
@@ -103,6 +105,7 @@ public class TransactionServiceImpl implements TransactionService {
                 response.setDescription(transaction.getDescription());
                 response.setTransactionDate(transaction.getTransactionDate());
                 response.setCategory(transaction.getCategory());
+                response.setPaymentMethod(transaction.getPaymentMethod());
                 response.setType(transaction.getType());
 
 return response;
@@ -138,6 +141,7 @@ return response;
             response.setTransactionDate(transaction.getTransactionDate());
             response.setType(transaction.getType());
             response.setCategory(transaction.getCategory());
+            response.setPaymentMethod(transaction.getPaymentMethod());
 
             res.add(response);
         }
@@ -164,6 +168,7 @@ return response;
         n.setTransactionDate(request.getTransactionDate());
         n.setType(request.getType());
         n.setCategory(request.getCategory());
+        n.setPaymentMethod(request.getPaymentMethod());
 
         Transaction x = transactionRepository.save(n);
 
@@ -176,6 +181,7 @@ return response;
         res.setTransactionDate(x.getTransactionDate());
         res.setType(x.getType());
         res.setCategory(x.getCategory());
+        res.setPaymentMethod(x.getPaymentMethod());
 
         return res;
 
@@ -289,6 +295,7 @@ return response;
                             transaction.getTransactionDate()
                     );
                     response.setCategory(transaction.getCategory());
+                    response.setPaymentMethod(transaction.getPaymentMethod());
                     response.setType(transaction.getType());
                     return response;
                 });

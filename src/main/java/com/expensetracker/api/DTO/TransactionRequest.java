@@ -1,6 +1,7 @@
 package com.expensetracker.api.DTO;
 
 import com.expensetracker.api.model.CategoryType;
+import com.expensetracker.api.model.PaymentMethod;
 import com.expensetracker.api.model.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,6 +26,9 @@ public class TransactionRequest {
 
     @NotNull(message = "Category is required")
     private CategoryType category;
+
+    @NotNull(message = "Payment Method is required")
+    private PaymentMethod paymentMethod;
 
     public TransactionRequest() {
     }
