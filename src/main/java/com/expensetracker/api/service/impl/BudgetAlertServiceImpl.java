@@ -36,12 +36,15 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
         this.budgetAlertRepository = budgetAlertRepository;
     }
 
+    private boolean isFlexibleCategory(CategoryType category){
+        return category == CategoryType.Food || category==CategoryType.Travel || category == CategoryType.Entertainment;
+    }
+
     @Override
     public void checkBudgetAlert(Month month, Year year, CategoryType category) {
         User user = currentUserService.getCurrentUser();
 
-        MonthlySummaryResponse summary =
-                monthlySummaryService.getSummaryOfCategory(
+        MonthlySummaryResponse summary = monthlySummaryService.getSummaryOfCategory(
                         month, year, category
                 );
 
@@ -52,7 +55,8 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
             return;
         }
 
-        BigDecimal warning = budget.multiply(new BigDecimal("0.80"));
+        BigDecimal warning_80 = budget.multiply(new BigDecimal("0.80"));
+        BigDecimal warning_50 = budget.multiply(new BigDecimal("0.50"));
 
         BudgetAlertType alertType;
         String subject;
@@ -63,29 +67,47 @@ public class BudgetAlertServiceImpl implements BudgetAlertService {
             subject = "Budget limit reached: " + category;
 
             message = "Your spending for " + category
-                    + " has reached or exceeded your budget.\n"
-                    + "Month: " + month + " " + year + "\n"
-                    + "Budget: " + budget + "\n"
+                       + " has reached or exceeded your budget.\n"
+                        + "Month: " + month + " " + year + "\n"
+                       + "Budget: " + budget + "\n"
                     + "Spent: " + spent + "\n"
                     + "Remaining: " + summary.getRemaining();
         }
-        else if (spent.compareTo(warning) >= 0) {
+        else if (spent.compareTo(warning_80) >= 0) {
             alertType = BudgetAlertType.WARNING_80_PERCENT;
             subject = "Budget warning: " + category;
 
             message = "You have used at least 80% of your "
                     + category + " budget.\n"
                     + "Month: " + month + " " + year + "\n"
-                    + "Budget: " + budget + "\n"
+                      + "Budget: " + budget + "\n"
                     + "Spent: " + spent + "\n"
+                    + "Remaining: " + summary.getRemaining();
+        }
+        else if(spent.compareTo(warning_50) >= 0){
+            alertType = BudgetAlertType.WARNING_50_PERCENT;
+            subject = "Budget warning: " + category;
+
+            message = "You have used at least 50% of your "
+                    + category + "budget.\n"
+                      + "Month: " + month + " " + year + "\n"
+                    + "Budget: " + budget + "\n"
+                    +"Spent: " + spent + "\n"
                     + "Remaining: " + summary.getRemaining();
         }
         else {
             return;
         }
 
-        boolean alreadySent = budgetAlertRepository
-                        .existsByUserAndCategoryAndMonthAndYearAndAlertType(
+
+        if(isFlexibleCategory(category) && alertType != BudgetAlertType.EXCEEDED_100_PERCENT){
+
+        }
+
+
+
+
+        boolean alreadySent = budgetAlertRepository.existsByUserAndCategoryAndMonthAndYearAndAlertType(
                                 user, category, month,
                                 year, alertType
                         );

@@ -11,9 +11,9 @@ GitHub:
 
 
 Today:
-=> Implemented Login Rate Limiter , When User Failed Three Times While Login Then That User Blocked For fifteen Minutes
+=> Added Payment Method In Transaction , Added warning mail for spending 50 percent of budget for each specific category
 Tomorrow:
-=> Will Add Payment Method In Transaction
+=> Read and Understand About Responsive
 Impediments:
 => None
 
@@ -61,59 +61,20 @@ Priority	Task
 4	Configure Swagger
 5	Docker + GitHub Actions
 
+  if (isFlexibleCategory(category) && alertType != BudgetAlertType.EXCEEDED_100_PERCENT) {
+             LocalDate today = LocalDate.now();
+             int currentDay = today.getDayOfMonth();
+             int totalDaysInMonth = today.lengthOfMonth();
+             int daysLeft = (totalDaysInMonth - currentDay) + 1; // Includes today
 
-@Override
-public User login(LoginRequest request) {
+             BigDecimal remaining = summary.getRemaining();
 
-    String username = request.getUsername();
+             if (daysLeft > 0 && remaining.signum() > 0) {
+                 BigDecimal safeDailyAllowance = remaining.divide(
+                         BigDecimal.valueOf(daysLeft), 2, RoundingMode.HALF_UP
+                 );
 
-    // 1. Check if the username is blocked
-    if (loginRateLimitor.isBlocked(username)) {
-        throw new IllegalArgumentException(
-                "Too many login attempts. Try again after 15 minutes."
-        );
-    }
-
-    // 2. Find user and record failure for unknown usernames
-    User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> {
-                loginRateLimitor.loginFailed(username);
-                return new IllegalArgumentException(
-                        "Invalid username or password"
-                );
-            });
-
-    // 3. Check email verification
-    if (!user.isEmailVerified()) {
-        throw new IllegalArgumentException(
-                "Please verify your email first"
-        );
-    }
-
-    // 4. Check account status
-    if (!user.isActive()) {
-        throw new IllegalArgumentException(
-                "User account is inactive"
-        );
-    }
-
-    // 5. Verify password
-    if (!passwordEncoder.matches(
-            request.getPassword(), user.getPassword())) {
-
-        loginRateLimitor.loginFailed(username);
-
-        throw new IllegalArgumentException(
-                "Invalid username or password"
-        );
-    }
-
-    // 6. Clear failed attempts after successful login
-    loginRateLimitor.loginSucceeded(username);
-
-    return user;
-}
-
-
-
-
+                 message += "\n\n💡 Financial Insight: To stay within budget, you can safely spend a maximum of "
+                         + safeDailyAllowance + " per day for the remaining " + daysLeft + " days.";
+             }
+         }
